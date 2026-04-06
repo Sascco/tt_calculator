@@ -8,6 +8,18 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+function Tooltip({ text }: { text: string }) {
+  return (
+    <span className="relative group inline-flex items-center ml-1 align-middle">
+      <Info className="w-3.5 h-3.5 text-slate-400 cursor-help" />
+      <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-60 text-xs text-white bg-slate-800 rounded-lg p-2.5 shadow-lg invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-none leading-relaxed">
+        {text}
+        <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800" />
+      </span>
+    </span>
+  );
+}
+
 const PROGRAMS = {
   // New Programs (Day-based from Spreadsheet)
   'AISE_NEW': { name: 'AISE', days: 252, mbgWeeks: 12 },
@@ -128,6 +140,7 @@ export default function App() {
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">
                     Program
+                    <Tooltip text="Select the student's enrolled program. Each program has a fixed duration and a maximum number of allowed extension weeks before MBG eligibility is lost." />
                   </label>
                   <select
                     value={program}
@@ -144,6 +157,7 @@ export default function App() {
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">
                     Starting Cohort Date
+                    <Tooltip text="The official date the student's cohort began. Must be November 14, 2024 or later — this calculator only applies to students on the new OTG day-based schedule." />
                   </label>
                   <input
                     type="date"
@@ -166,6 +180,7 @@ export default function App() {
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">
                     Extra Weeks Used
+                    <Tooltip text="The number of extension weeks the student has used so far. Enter 0 if the student is on track. If a Christmas Break credit applies, it will be subtracted automatically." />
                   </label>
                   <div className="relative">
                     <input
@@ -235,6 +250,7 @@ export default function App() {
                     <div className="flex items-center gap-2 text-slate-500 mb-2">
                       <Calendar className="w-4 h-4" />
                       <span className="text-sm font-medium uppercase tracking-wider">Standard End Date</span>
+                      <Tooltip text="The target graduation date if the student uses no extensions. Calculated as the MBG Deadline minus the program's maximum allowed extension weeks." />
                     </div>
                     <div className="text-2xl font-bold text-slate-900">
                       {format(results.regularEndDate, 'MMM do, yyyy')}
@@ -248,6 +264,7 @@ export default function App() {
                     <div className="flex items-center gap-2 text-slate-500 mb-2">
                       <Calendar className="w-4 h-4" />
                       <span className="text-sm font-medium uppercase tracking-wider">MBG Deadline (OTG)</span>
+                      <Tooltip text="The absolute latest date the student can graduate and remain eligible for the Money-Back Guarantee. Calculated as Start Date + Program Duration. No extensions can push this date forward." />
                     </div>
                     <div className="text-2xl font-bold text-slate-900">
                       {format(results.mbgEndDate, 'MMM do, yyyy')}
@@ -267,21 +284,21 @@ export default function App() {
                   
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <div>
-                      <div className="text-sm text-slate-500 mb-1">Actual End Date</div>
+                      <div className="text-sm text-slate-500 mb-1">Actual End Date <Tooltip text="Where the student will actually finish based on their extension weeks used, after applying any Christmas Break credit." /></div>
                       <div className="font-semibold text-slate-900">
                         {format(results.actualEndDate, 'MMM do, yyyy')}
                       </div>
                     </div>
                     
                     <div>
-                      <div className="text-sm text-slate-500 mb-1">Allowed Extensions</div>
+                      <div className="text-sm text-slate-500 mb-1">Allowed Extensions <Tooltip text="The maximum number of extension weeks this program permits before MBG eligibility is lost. This limit is fixed per program and cannot be changed." /></div>
                       <div className="font-semibold text-slate-900">
                         {results.progData.mbgWeeks} weeks
                       </div>
                     </div>
 
                     <div>
-                      <div className="text-sm text-slate-500 mb-1">Effective Extra Weeks</div>
+                      <div className="text-sm text-slate-500 mb-1">Effective Extra Weeks <Tooltip text="The number of extra weeks counted after applying the Christmas Break credit (if any). This is the value compared against the Allowed Extensions limit to determine MBG eligibility." /></div>
                       <div className="font-semibold text-slate-900">
                         {results.effectiveExtraWeeks} weeks
                       </div>
