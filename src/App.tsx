@@ -71,14 +71,14 @@ export default function App() {
     // Student gets credit if their study period (start to regular end) overlaps with any break
     const qualifyingBreak = CHRISTMAS_BREAKS.find(breakPeriod => {
       // Overlap check: Start is before break ends AND regular end is after break starts
-      return isBefore(parsedStartDate, breakPeriod.end) && 
-             !isBefore(regularEndDate, breakPeriod.start);
+      return isBefore(parsedStartDate, breakPeriod.end) &&
+        !isBefore(regularEndDate, breakPeriod.start);
     });
-    
+
     const qualifiesForChristmasBreak = !!qualifyingBreak;
-    
-    const effectiveExtraWeeks = (qualifiesForChristmasBreak && numericExtraWeeks > 0) 
-      ? Math.max(0, numericExtraWeeks - 1) 
+
+    const effectiveExtraWeeks = (qualifiesForChristmasBreak && numericExtraWeeks > 0)
+      ? Math.max(0, numericExtraWeeks - 1)
       : numericExtraWeeks;
 
     // 3. Actual End Date
@@ -112,7 +112,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-4 md:p-8">
       <div className="max-w-5xl mx-auto space-y-6">
-        
+
         {/* Header */}
         <header className="flex items-center gap-3 pb-6 border-b border-slate-200">
           <div className="p-3 bg-blue-600 text-white rounded-xl shadow-sm">
@@ -130,7 +130,7 @@ export default function App() {
 
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
+
           {/* Inputs Column */}
           <div className="lg:col-span-4 space-y-6">
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
@@ -138,7 +138,7 @@ export default function App() {
                 <GraduationCap className="w-5 h-5 text-blue-600" />
                 Student Details
               </h2>
-              
+
               <div className="space-y-5">
                 {/* Program Selection */}
                 <div>
@@ -226,27 +226,23 @@ export default function App() {
                 <div className={cn(
                   "rounded-2xl p-6 border shadow-sm flex items-start gap-4",
                   results.status === 'regular' && "bg-emerald-50 border-emerald-200 text-emerald-900",
-                  (results.status === 'mbg' || results.status === 'mbg-max' || results.status === 'mbg-grace') && "bg-amber-50 border-amber-200 text-amber-900",
+                  results.status === 'mbg' && "bg-amber-50 border-amber-200 text-amber-900",
                   results.status === 'exceeded' && "bg-red-50 border-red-200 text-red-900"
                 )}>
                   <div className="shrink-0 mt-1">
                     {results.status === 'regular' && <ShieldCheck className="w-8 h-8 text-emerald-600" />}
-                    {(results.status === 'mbg' || results.status === 'mbg-max' || results.status === 'mbg-grace') && <ShieldAlert className="w-8 h-8 text-amber-600" />}
+                    {results.status === 'mbg' && <ShieldAlert className="w-8 h-8 text-amber-600" />}
                     {results.status === 'exceeded' && <ShieldX className="w-8 h-8 text-red-600" />}
                   </div>
                   <div>
                     <h3 className="text-lg font-bold mb-1">
                       {results.status === 'regular' && "✅ Within Regular Time"}
                       {results.status === 'mbg' && "⏳ Within MBG Period (Eligible)"}
-                      {results.status === 'mbg-max' && "⏳ MBG Period Limit (Eligible)"}
-                      {results.status === 'mbg-grace' && "⏳ Final Week Grace Period (Eligible)"}
                       {results.status === 'exceeded' && "❌ Exceeded MBG Deadline"}
                     </h3>
                     <p className="text-sm opacity-90">
                       {results.status === 'regular' && `Student used 0 extra weeks and is fully eligible.`}
                       {results.status === 'mbg' && `Student used ${results.effectiveExtraWeeks} extra weeks (Limit: ${results.progData.mbgWeeks}). Still eligible.`}
-                      {results.status === 'mbg-max' && `Student used ${results.effectiveExtraWeeks} extra weeks. Even though the student has used the ${results.progData.mbgWeeks} allowed weeks, they are still eligible! The ${results.progData.mbgWeeks}th week has 7 days, so they can complete the project on the last day of this week before the following week begins.`}
-                      {results.status === 'mbg-grace' && `Student used ${results.effectiveExtraWeeks} extra weeks. They hit the ${results.progData.mbgWeeks} week limit, but are still eligible during the 7-day grace period of the final week before the next week officially begins.`}
                       {results.status === 'exceeded' && `Student used ${results.effectiveExtraWeeks} extra weeks, exceeding the ${results.progData.mbgWeeks} week limit.`}
                     </p>
                   </div>
@@ -289,7 +285,7 @@ export default function App() {
                     <Clock className="w-5 h-5 text-blue-600" />
                     Calculation Details
                   </h3>
-                  
+
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <div>
                       <div className="text-sm text-slate-500 mb-1">Actual End Date <Tooltip text="Where the student will actually finish based on their extension weeks used, after applying any Christmas Break credit." /></div>
@@ -297,7 +293,7 @@ export default function App() {
                         {format(results.actualEndDate, 'MMM do, yyyy')}
                       </div>
                     </div>
-                    
+
                     <div>
                       <div className="text-sm text-slate-500 mb-1">Allowed Extensions <Tooltip text="The maximum number of extension weeks this program permits before MBG eligibility is lost. This limit is fixed per program and cannot be changed." /></div>
                       <div className="font-semibold text-slate-900">
