@@ -26,7 +26,8 @@ const PROGRAMS = {
   'AIML_NEW': { name: 'AIML', days: 378, mbgWeeks: 18 },
   'QA_NEW': { name: 'QA', days: 210, mbgWeeks: 10 },
   'BI_NEW': { name: 'BI', days: 168, mbgWeeks: 8 },
-  'CSA_NEW': { name: 'CSA', days: 315, mbgWeeks: 14 },
+  // CSA has a variable duration based on the student's starting date (see CSA_TIERS below)
+  'CSA_NEW': { name: 'CSA', days: 210, mbgWeeks: 14 },
   'UXUI_NEW': { name: 'UXUI', days: 221, mbgWeeks: 10 },
   'AIAUTO_NEW': { name: 'AI Automation (AIA)', days: 147, mbgWeeks: 7 },
   'DS_NEW': { name: 'DS', days: 347, mbgWeeks: 17 },
@@ -34,6 +35,27 @@ const PROGRAMS = {
 };
 
 type ProgramKey = keyof typeof PROGRAMS;
+
+// CSA program has three duration tiers based on the student's cohort start date.
+// All cohorts start on Thursdays, so dates naturally fall within one range.
+const CSA_TIERS = [
+  { from: parseISO('2024-11-14'), to: parseISO('2025-12-29'), days: 196 },
+  { from: parseISO('2025-12-30'), to: parseISO('2026-02-12'), days: 203 },
+  { from: parseISO('2026-02-13'), to: null, days: 210 }, // Feb 13, 2026 onwards
+];
+
+// Returns the correct program duration in days.
+// For CSA, the duration is determined by the student's starting date tier.
+// For all other programs, it returns the fixed days value.
+function getProgramDays(programKey: ProgramKey, startDate: Date): number {
+  if (programKey === 'CSA_NEW') {
+    const tier = CSA_TIERS.find(t =>
+      !isBefore(startDate, t.from) && (t.to === null || isBefore(startDate, addDays(t.to, 1)))
+    );
+    return tier ? tier.days : PROGRAMS['CSA_NEW'].days;
+  }
+  return PROGRAMS[programKey].days;
+}
 
 const CHRISTMAS_BREAKS = [
   { start: parseISO('2024-12-23'), end: parseISO('2025-01-05') },
@@ -62,8 +84,9 @@ export default function App() {
     const numericExtraWeeks = typeof extraWeeks === 'string' ? parseInt(extraWeeks) || 0 : extraWeeks;
 
     // 1. Calculate Regular End Date
-    // Standard duration is implicitly the total days minus the max extension weeks
-    const regularDurationDays = progData.days - (progData.mbgWeeks * 7);
+    // For CSA, programDays is resolved from the date-based tier. All others use fixed days.
+    const programDays = getProgramDays(program, parsedStartDate);
+    const regularDurationDays = programDays - (progData.mbgWeeks * 7);
     const regularEndDate = addDays(parsedStartDate, regularDurationDays);
 
     // 2. Calculate MBG Deadline
@@ -111,7 +134,8 @@ export default function App() {
       effectiveExtraWeeks,
       qualifiesForChristmasBreak,
       status,
-      progData
+      progData,
+      programDays
     };
   }, [program, startDate, extraWeeks, isValidDate, parsedStartDate]);
 
@@ -251,6 +275,22 @@ export default function App() {
                       {results.status === 'mbg' && `Student used ${results.effectiveExtraWeeks} extra weeks (Limit: ${results.progData.mbgWeeks}). Still eligible.`}
                       {results.status === 'exceeded' && `Student used ${results.effectiveExtraWeeks} extra weeks, exceeding the ${results.progData.mbgWeeks} week limit.`}
                     </p>
+                  </div>
+                </div>
+
+                {/* Program Duration Banner */}
+                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm px-6 py-4 flex items-center gap-3">
+                  <div className="p-2 bg-blue-50 rounded-lg">
+                    <Clock className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-sm font-medium text-slate-500 uppercase tracking-wider">Program Duration</span>
+                    <span className="text-lg font-bold text-slate-900">{results.programDays} days</span>
+                    {program === 'CSA_NEW' && (
+                      <span className="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded-full">
+                        Cohort-based duration
+                      </span>
+                    )}
                   </div>
                 </div>
 
