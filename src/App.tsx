@@ -85,11 +85,15 @@ export default function App() {
     const actualEndDate = addWeeks(regularEndDate, effectiveExtraWeeks);
 
     // 4. Status
-    let status: 'regular' | 'mbg' | 'exceeded' = 'regular';
+    let status: 'regular' | 'mbg' | 'mbg-max' | 'mbg-grace' | 'exceeded' = 'regular';
     if (effectiveExtraWeeks === 0) {
       status = 'regular';
-    } else if (effectiveExtraWeeks <= progData.mbgWeeks) {
+    } else if (effectiveExtraWeeks < progData.mbgWeeks) {
       status = 'mbg';
+    } else if (effectiveExtraWeeks === progData.mbgWeeks) {
+      status = 'mbg-max';
+    } else if (effectiveExtraWeeks === progData.mbgWeeks + 1) {
+      status = 'mbg-grace';
     } else {
       status = 'exceeded';
     }
@@ -222,23 +226,27 @@ export default function App() {
                 <div className={cn(
                   "rounded-2xl p-6 border shadow-sm flex items-start gap-4",
                   results.status === 'regular' && "bg-emerald-50 border-emerald-200 text-emerald-900",
-                  results.status === 'mbg' && "bg-amber-50 border-amber-200 text-amber-900",
+                  (results.status === 'mbg' || results.status === 'mbg-max' || results.status === 'mbg-grace') && "bg-amber-50 border-amber-200 text-amber-900",
                   results.status === 'exceeded' && "bg-red-50 border-red-200 text-red-900"
                 )}>
                   <div className="shrink-0 mt-1">
                     {results.status === 'regular' && <ShieldCheck className="w-8 h-8 text-emerald-600" />}
-                    {results.status === 'mbg' && <ShieldAlert className="w-8 h-8 text-amber-600" />}
+                    {(results.status === 'mbg' || results.status === 'mbg-max' || results.status === 'mbg-grace') && <ShieldAlert className="w-8 h-8 text-amber-600" />}
                     {results.status === 'exceeded' && <ShieldX className="w-8 h-8 text-red-600" />}
                   </div>
                   <div>
                     <h3 className="text-lg font-bold mb-1">
                       {results.status === 'regular' && "✅ Within Regular Time"}
                       {results.status === 'mbg' && "⏳ Within MBG Period (Eligible)"}
+                      {results.status === 'mbg-max' && "⏳ MBG Period Limit (Eligible)"}
+                      {results.status === 'mbg-grace' && "⏳ Final Week Grace Period (Eligible)"}
                       {results.status === 'exceeded' && "❌ Exceeded MBG Deadline"}
                     </h3>
                     <p className="text-sm opacity-90">
                       {results.status === 'regular' && `Student used 0 extra weeks and is fully eligible.`}
                       {results.status === 'mbg' && `Student used ${results.effectiveExtraWeeks} extra weeks (Limit: ${results.progData.mbgWeeks}). Still eligible.`}
+                      {results.status === 'mbg-max' && `Student used ${results.effectiveExtraWeeks} extra weeks. Even though the student has used the ${results.progData.mbgWeeks} allowed weeks, they are still eligible! The ${results.progData.mbgWeeks}th week has 7 days, so they can complete the project on the last day of this week before the following week begins.`}
+                      {results.status === 'mbg-grace' && `Student used ${results.effectiveExtraWeeks} extra weeks. They hit the ${results.progData.mbgWeeks} week limit, but are still eligible during the 7-day grace period of the final week before the next week officially begins.`}
                       {results.status === 'exceeded' && `Student used ${results.effectiveExtraWeeks} extra weeks, exceeding the ${results.progData.mbgWeeks} week limit.`}
                     </p>
                   </div>
@@ -250,13 +258,13 @@ export default function App() {
                     <div className="flex items-center gap-2 text-slate-500 mb-2">
                       <Calendar className="w-4 h-4" />
                       <span className="text-sm font-medium uppercase tracking-wider">Standard End Date</span>
-                      <Tooltip text="The target graduation date if the student uses no extensions. Calculated as the MBG Deadline minus the program's maximum allowed extension weeks." />
+                      <Tooltip text="The targeted completion date if the student uses no extensions. Calculated as the MBG Deadline minus the program's maximum allowed extension weeks." />
                     </div>
                     <div className="text-2xl font-bold text-slate-900">
                       {format(results.regularEndDate, 'MMM do, yyyy')}
                     </div>
                     <div className="text-sm text-slate-500 mt-1">
-                      Target graduation without extensions.
+                      Target completion date without extensions.
                     </div>
                   </div>
 
@@ -264,7 +272,7 @@ export default function App() {
                     <div className="flex items-center gap-2 text-slate-500 mb-2">
                       <Calendar className="w-4 h-4" />
                       <span className="text-sm font-medium uppercase tracking-wider">MBG Deadline (OTG)</span>
-                      <Tooltip text="The absolute latest date the student can graduate and remain eligible for the Money-Back Guarantee. Calculated as Start Date + Program Duration. No extensions can push this date forward." />
+                      <Tooltip text="The absolute latest date the student can complete their program and remain eligible for the Money-Back Guarantee. Calculated as Start Date + Program Duration. No extensions can push this date forward." />
                     </div>
                     <div className="text-2xl font-bold text-slate-900">
                       {format(results.mbgEndDate, 'MMM do, yyyy')}
