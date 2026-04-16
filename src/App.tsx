@@ -93,15 +93,13 @@ export default function App() {
     }
 
     // 5. Status
-    let status: 'regular' | 'mbg' | 'mbg-max' | 'mbg-grace' | 'exceeded' = 'regular';
+    // The 7-day cycle buffer is already baked into mbgEndDate and actualEndDate,
+    // so eligibility simply checks whether extra weeks are within the program's allowed limit.
+    let status: 'regular' | 'mbg' | 'exceeded' = 'regular';
     if (effectiveExtraWeeks === 0) {
       status = 'regular';
-    } else if (effectiveExtraWeeks < progData.mbgWeeks) {
+    } else if (effectiveExtraWeeks <= progData.mbgWeeks) {
       status = 'mbg';
-    } else if (effectiveExtraWeeks === progData.mbgWeeks) {
-      status = 'mbg-max';
-    } else if (effectiveExtraWeeks === progData.mbgWeeks + 1) {
-      status = 'mbg-grace';
     } else {
       status = 'exceeded';
     }
