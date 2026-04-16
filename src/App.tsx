@@ -61,11 +61,14 @@ export default function App() {
     const progData = PROGRAMS[program] as any;
     const numericExtraWeeks = typeof extraWeeks === 'string' ? parseInt(extraWeeks) || 0 : extraWeeks;
 
-    // 1. Calculate MBG Deadline
-    // The 'days' in spreadsheet IS the MBG Deadline
-    const mbgEndDate = addDays(parsedStartDate, progData.days);
-    // Regular End Date is MBG Deadline minus the allowed extension weeks
-    const regularEndDate = addWeeks(mbgEndDate, -progData.mbgWeeks);
+    // 1. Calculate Regular End Date
+    // Standard duration is implicitly the total days minus the max extension weeks
+    const regularDurationDays = progData.days - (progData.mbgWeeks * 7);
+    const regularEndDate = addDays(parsedStartDate, regularDurationDays);
+
+    // 2. Calculate MBG Deadline
+    // The MBG Deadline receives the mathematical (progData.mbgWeeks * 7) plus the 7-day Cycle Buffer
+    const mbgEndDate = addDays(regularEndDate, (progData.mbgWeeks * 7) + 7);
 
     // 2. Christmas Break Logic (Automatic)
     // Student gets credit if their study period (start to regular end) overlaps with any break
@@ -81,10 +84,15 @@ export default function App() {
       ? Math.max(0, numericExtraWeeks - 1)
       : numericExtraWeeks;
 
-    // 3. Actual End Date
-    const actualEndDate = addWeeks(regularEndDate, effectiveExtraWeeks);
+    // 4. Actual End Date
+    let actualEndDate;
+    if (effectiveExtraWeeks === 0) {
+      actualEndDate = regularEndDate;
+    } else {
+      actualEndDate = addDays(regularEndDate, (effectiveExtraWeeks * 7) + 7);
+    }
 
-    // 4. Status
+    // 5. Status
     let status: 'regular' | 'mbg' | 'mbg-max' | 'mbg-grace' | 'exceeded' = 'regular';
     if (effectiveExtraWeeks === 0) {
       status = 'regular';
