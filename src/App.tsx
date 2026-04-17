@@ -22,16 +22,16 @@ function Tooltip({ text }: { text: string }) {
 
 const PROGRAMS = {
   // New Programs (Day-based from Spreadsheet)
-  'AISE_NEW': { name: 'AISE', days: 252, mbgWeeks: 12 },
-  'AIML_NEW': { name: 'AIML', days: 378, mbgWeeks: 18 },
-  'QA_NEW': { name: 'QA', days: 210, mbgWeeks: 10 },
-  'BI_NEW': { name: 'BI', days: 168, mbgWeeks: 8 },
+  'AISE_NEW': { name: 'AI Software Engineering', days: 252, mbgWeeks: 12 },
+  'AIML_NEW': { name: 'AI & Machine Learning', days: 378, mbgWeeks: 18 },
+  'QA_NEW': { name: 'Quality Assurance', days: 210, mbgWeeks: 10 },
+  'BI_NEW': { name: 'Business Intelligence Analytics', days: 168, mbgWeeks: 8 },
   // CSA has a variable duration based on the student's starting date (see CSA_TIERS below)
-  'CSA_NEW': { name: 'CSA', days: 210, mbgWeeks: 14 },
-  'UXUI_NEW': { name: 'UXUI', days: 221, mbgWeeks: 10 },
-  'AIAUTO_NEW': { name: 'AI Automation (AIA)', days: 147, mbgWeeks: 7 },
-  'DS_NEW': { name: 'DS', days: 347, mbgWeeks: 17 },
-  'WEB_NEW': { name: 'WEB', days: 399, mbgWeeks: 19 },
+  'CSA_NEW': { name: 'Cybersecurity Analyst', days: 210, mbgWeeks: 14 },
+  'UXUI_NEW': { name: 'UX/UI Design', days: 221, mbgWeeks: 10 },
+  'AIAUTO_NEW': { name: 'AI Automation', days: 147, mbgWeeks: 7 },
+  'DS_NEW': { name: 'Data Science', days: 347, mbgWeeks: 17 },
+  'WEB_NEW': { name: 'Web Development', days: 399, mbgWeeks: 19 },
 };
 
 type ProgramKey = keyof typeof PROGRAMS;
@@ -136,7 +136,8 @@ export default function App() {
       qualifiesForChristmasBreak,
       status,
       progData,
-      programDays
+      programDays,
+      standardDays: regularDurationDays
     };
   }, [program, startDate, extraWeeks, isValidDate, parsedStartDate]);
 
@@ -286,7 +287,7 @@ export default function App() {
                   </div>
                   <div className="flex items-baseline gap-2">
                     <span className="text-sm font-medium text-slate-500 uppercase tracking-wider">Program Duration</span>
-                    <span className="text-lg font-bold text-slate-900">{results.programDays} days</span>
+                    <span className="text-lg font-bold text-slate-900">{results.standardDays} days</span>
                     {program === 'CSA_NEW' && (
                       <span className="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded-full">
                         Cohort-based duration
