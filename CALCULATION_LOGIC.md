@@ -39,18 +39,21 @@ Each program has two fixed values defined in the code:
 
 ## CSA Duration Tiers
 
-The Cybersecurity (CSA) program has a **variable duration** depending on the student's cohort start date. The system automatically resolves the correct duration based on the date entered — no manual selection needed.
+The Cybersecurity (CSA) program has a **variable standard duration** depending on the student's cohort start date. The system automatically resolves the correct duration based on the date entered — no manual selection needed.
 
-| Cohort Start Date Range | Program Duration |
-|---|---|
-| Nov 14, 2024 – Dec 29, 2025 | **196 days** |
-| Dec 30, 2025 – Feb 12, 2026 | **203 days** |
-| Feb 13, 2026 – present | **210 days** |
+| Cohort Start Date Range | Standard Duration | Total Days (incl. 14 ext. weeks) |
+|---|---|---|
+| Nov 14, 2024 – Dec 29, 2025 | **196 days** | 294 days |
+| Dec 30, 2025 – Feb 12, 2026 | **203 days** | 301 days |
+| Feb 13, 2026 – present | **210 days** | 308 days |
 
 > [!NOTE]
 > All CSA cohorts begin on a Thursday, so start dates naturally fall cleanly within one of the three ranges above. The maximum allowed extension weeks remain **14 weeks** for all CSA tiers.
 
-When a CSA student's start date is entered, the calculator uses this table to determine the correct `Total Days` for all subsequent calculations. A **"Cohort-based duration"** badge is displayed in the UI alongside the Program Duration to signal this special behavior.
+- **Standard Duration** = the expected completion time with zero extensions (what the calculator uses as the Standard End Date offset).
+- **Total Days** = Standard Duration + (14 × 7 days) = the full span used internally to derive the MBG Deadline.
+
+When a CSA student's start date is entered, the calculator uses this table to determine the correct Standard Duration for all subsequent calculations. A **"Cohort-based duration"** badge is displayed in the UI alongside the Program Duration to signal this special behavior.
 
 ---
 

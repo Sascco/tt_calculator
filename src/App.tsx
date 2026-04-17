@@ -38,10 +38,11 @@ type ProgramKey = keyof typeof PROGRAMS;
 
 // CSA program has three duration tiers based on the student's cohort start date.
 // All cohorts start on Thursdays, so dates naturally fall within one range.
+// 'days' here = standard duration + (14 mbgWeeks × 7) = total program span
 const CSA_TIERS = [
-  { from: parseISO('2024-11-14'), to: parseISO('2025-12-29'), days: 196 },
-  { from: parseISO('2025-12-30'), to: parseISO('2026-02-12'), days: 203 },
-  { from: parseISO('2026-02-13'), to: null, days: 210 }, // Feb 13, 2026 onwards
+  { from: parseISO('2024-11-14'), to: parseISO('2025-12-29'), days: 294 }, // 196 standard + 98 ext
+  { from: parseISO('2025-12-30'), to: parseISO('2026-02-12'), days: 301 }, // 203 standard + 98 ext
+  { from: parseISO('2026-02-13'), to: null, days: 308 },                   // 210 standard + 98 ext
 ];
 
 // Returns the correct program duration in days.
