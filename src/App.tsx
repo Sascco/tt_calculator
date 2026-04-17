@@ -20,51 +20,127 @@ function Tooltip({ text }: { text: string }) {
   );
 }
 
-const PROGRAMS = {
-  // New Programs (Day-based from Spreadsheet)
-  'AISE_NEW': { name: 'AI Software Engineering', days: 252, mbgWeeks: 12 },
-  'AIML_NEW': { name: 'AI & Machine Learning', days: 378, mbgWeeks: 18 },
-  'QA_NEW': { name: 'Quality Assurance', days: 210, mbgWeeks: 10 },
-  'BI_NEW': { name: 'Business Intelligence Analytics', days: 168, mbgWeeks: 8 },
-  // CSA has a variable duration based on the student's starting date (see CSA_TIERS below)
-  'CSA_NEW': { name: 'Cybersecurity Analyst', days: 210, mbgWeeks: 14 },
-  'UXUI_NEW': { name: 'UX/UI Design', days: 221, mbgWeeks: 10 },
-  'AIAUTO_NEW': { name: 'AI Automation', days: 147, mbgWeeks: 7 },
-  'DS_NEW': { name: 'Data Science', days: 347, mbgWeeks: 17 },
-  'WEB_NEW': { name: 'Web Development', days: 399, mbgWeeks: 19 },
+type ProgramTier = {
+  from: Date;
+  to: Date | null;
+  days: number;
+};
+
+type ProgramFormat = {
+  name: string;
+  mbgWeeks: number;
+  defaultDays: number;
+  tiers?: ProgramTier[];
+};
+
+const PROGRAMS: Record<string, ProgramFormat> = {
+  // Software Engineering
+  'SE_PT': {
+    name: 'Software Engineering (Part-time)',
+    mbgWeeks: 19,
+    defaultDays: 266,
+  },
+  'SE_FT': {
+    name: 'Software Engineering (Full-time)',
+    mbgWeeks: 19,
+    defaultDays: 120, // using the earliest known figure
+    tiers: [
+      { from: parseISO('2024-11-14'), to: parseISO('2025-03-09'), days: 120 },
+      { from: parseISO('2025-03-10'), to: parseISO('2025-05-14'), days: 120 },
+      { from: parseISO('2025-05-15'), to: parseISO('2025-12-29'), days: 126 },
+      { from: parseISO('2025-12-30'), to: null, days: 154 },
+    ]
+  },
+  // Data Science
+  'DS_NEW': {
+    name: 'Data Science',
+    mbgWeeks: 17,
+    defaultDays: 224,
+    tiers: [
+      { from: parseISO('2024-11-14'), to: parseISO('2025-03-09'), days: 224 },
+      { from: parseISO('2025-03-10'), to: null, days: 231 },
+    ]
+  },
+  // Quality Assurance
+  'QA_NEW': {
+    name: 'Quality Assurance',
+    mbgWeeks: 10,
+    defaultDays: 140,
+  },
+  // BI Analyst
+  'BI_NEW': {
+    name: 'Business Intelligence Analytics',
+    mbgWeeks: 8,
+    defaultDays: 112,
+  },
+  // Cybersecurity Analyst
+  'CSA_PT': {
+    name: 'Cyber Security (Part-time)',
+    mbgWeeks: 14,
+    defaultDays: 196,
+    tiers: [
+      { from: parseISO('2024-11-14'), to: parseISO('2025-12-29'), days: 196 },
+      { from: parseISO('2025-12-30'), to: parseISO('2026-02-12'), days: 203 },
+      { from: parseISO('2026-02-13'), to: null, days: 210 },
+    ]
+  },
+  'CSA_FT': {
+    name: 'Cyber Security (Full-time)',
+    mbgWeeks: 14, 
+    defaultDays: 91,
+    tiers: [
+      { from: parseISO('2024-11-14'), to: parseISO('2025-12-29'), days: 91 },
+      { from: parseISO('2025-12-30'), to: parseISO('2026-02-12'), days: 112 },
+      { from: parseISO('2026-02-13'), to: null, days: 119 },
+    ]
+  },
+  // UX/UI Design
+  'UXUI_NEW': {
+    name: 'UX/UI Design',
+    mbgWeeks: 10,
+    defaultDays: 140,
+    tiers: [
+      { from: parseISO('2024-11-14'), to: parseISO('2025-05-14'), days: 140 },
+      { from: parseISO('2025-05-15'), to: null, days: 147 },
+    ]
+  },
+  // AI Automation
+  'AIAUTO_NEW': {
+    name: 'AI Automation',
+    mbgWeeks: 7,
+    defaultDays: 98,
+  },
+  // AI and Machine Learning
+  'AIML_NEW': {
+    name: 'AI & Machine Learning',
+    mbgWeeks: 18,
+    defaultDays: 252,
+  },
+  // AI Software Engineering
+  'AISE_PT': {
+    name: 'AI Software Engineering (Part-time)',
+    mbgWeeks: 12,
+    defaultDays: 168,
+  },
+  'AISE_FT': {
+    name: 'AI Software Engineering (Full-time)',
+    mbgWeeks: 12,
+    defaultDays: 98,
+  }
 };
 
 type ProgramKey = keyof typeof PROGRAMS;
 
-// CSA program has three duration tiers based on the student's cohort start date.
-// All cohorts start on Thursdays, so dates naturally fall within one range.
-// 'days' here = standard duration + (14 mbgWeeks × 7) = total program span
-const CSA_TIERS = [
-  { from: parseISO('2024-11-14'), to: parseISO('2025-12-29'), days: 294 }, // 196 standard + 98 ext
-  { from: parseISO('2025-12-30'), to: parseISO('2026-02-12'), days: 301 }, // 203 standard + 98 ext
-  { from: parseISO('2026-02-13'), to: null, days: 308 },                   // 210 standard + 98 ext
-];
-
-// Returns the correct program duration in days.
-// For CSA, the duration is determined by the student's starting date tier.
-// For all other programs, it returns the fixed days value.
-function getProgramDays(programKey: ProgramKey, startDate: Date): number {
-  if (programKey === 'CSA_NEW') {
-    const tier = CSA_TIERS.find(t =>
+function getStandardDays(programKey: ProgramKey, startDate: Date): number {
+  const prog = PROGRAMS[programKey];
+  if (prog.tiers) {
+    const tier = prog.tiers.find(t =>
       !isBefore(startDate, t.from) && (t.to === null || isBefore(startDate, addDays(t.to, 1)))
     );
-    return tier ? tier.days : PROGRAMS['CSA_NEW'].days;
+    if (tier) return tier.days;
   }
-  return PROGRAMS[programKey].days;
+  return prog.defaultDays;
 }
-
-const CHRISTMAS_BREAKS = [
-  { start: parseISO('2024-12-25'), end: parseISO('2025-01-01') },
-  { start: parseISO('2025-12-25'), end: parseISO('2026-01-01') },
-  { start: parseISO('2026-12-25'), end: parseISO('2027-01-01') },
-  { start: parseISO('2027-12-25'), end: parseISO('2028-01-01') },
-  { start: parseISO('2028-12-25'), end: parseISO('2029-01-01') },
-];
 
 export default function App() {
   const [program, setProgram] = useState<ProgramKey>('QA_NEW');
@@ -87,35 +163,22 @@ export default function App() {
     const numericExtraWeeks = typeof extraWeeks === 'string' ? parseInt(extraWeeks) || 0 : extraWeeks;
 
     // 1. Calculate Regular End Date
-    // For CSA, programDays is resolved from the date-based tier. All others use fixed days.
-    const programDays = getProgramDays(program, parsedStartDate);
-    const regularDurationDays = programDays - (progData.mbgWeeks * 7);
+    const regularDurationDays = getStandardDays(program, parsedStartDate);
+    const programDays = regularDurationDays + (progData.mbgWeeks * 7);
     const regularEndDate = addDays(parsedStartDate, regularDurationDays);
 
     // 2. Calculate MBG Deadline
-    // The MBG Deadline receives the mathematical (progData.mbgWeeks * 7) plus the 7-day Cycle Buffer
-    const mbgEndDate = addDays(regularEndDate, (progData.mbgWeeks * 7) + 7);
+    // The MBG Deadline = Standard End Date + (Max Extension Weeks × 7)
+    const mbgEndDate = addDays(regularEndDate, progData.mbgWeeks * 7);
 
-    // 2. Christmas Break Logic (Automatic)
-    // Student gets credit if their study period (start to regular end) overlaps with any break
-    const qualifyingBreak = CHRISTMAS_BREAKS.find(breakPeriod => {
-      // Overlap check: Start is before break ends AND regular end is after break starts
-      return isBefore(parsedStartDate, breakPeriod.end) &&
-        !isBefore(regularEndDate, breakPeriod.start);
-    });
-
-    const qualifiesForChristmasBreak = !!qualifyingBreak;
-
-    const effectiveExtraWeeks = (qualifiesForChristmasBreak && numericExtraWeeks > 0)
-      ? Math.max(0, numericExtraWeeks - 1)
-      : numericExtraWeeks;
+    const effectiveExtraWeeks = numericExtraWeeks;
 
     // 4. Actual End Date
     let actualEndDate;
     if (effectiveExtraWeeks === 0) {
       actualEndDate = regularEndDate;
     } else {
-      actualEndDate = addDays(regularEndDate, (effectiveExtraWeeks * 7) + 7);
+      actualEndDate = addDays(regularEndDate, effectiveExtraWeeks * 7);
     }
 
     // 5. Status
@@ -138,7 +201,6 @@ export default function App() {
       mbgEndDate,
       actualEndDate,
       effectiveExtraWeeks,
-      qualifiesForChristmasBreak,
       status,
       progData,
       programDays,
@@ -230,7 +292,7 @@ export default function App() {
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">
                     Extra Weeks Used
-                    <Tooltip text="The number of extension weeks the student has used so far. Enter 0 if the student is on track. If a Christmas Break credit applies, it will be subtracted automatically." />
+                    <Tooltip text="The number of extension weeks the student has used so far. Enter 0 if the student is on track." />
                   </label>
                   <div className="relative">
                     <input
@@ -246,19 +308,6 @@ export default function App() {
                     </div>
                   </div>
                 </div>
-
-                {/* Christmas Break Info */}
-                {results?.qualifiesForChristmasBreak && (
-                  <div className="p-3 rounded-lg border border-blue-100 bg-blue-50 flex gap-3">
-                    <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium text-blue-900">Christmas Break Applied</span>
-                      <span className="text-xs text-blue-700 mt-0.5">
-                        This student's program overlaps with a holiday break. 1 week has been automatically credited.
-                      </span>
-                    </div>
-                  </div>
-                )}
 
               </div>
             </div>
@@ -332,7 +381,7 @@ export default function App() {
                   <div className="flex items-baseline gap-2">
                     <span className="text-sm font-medium text-slate-500 uppercase tracking-wider">Program Duration</span>
                     <span className="text-lg font-bold text-slate-900">{results.standardDays} days</span>
-                    {program === 'CSA_NEW' && (
+                    {results.progData.tiers && (
                       <span className="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded-full">
                         Cohort-based duration
                       </span>
@@ -380,7 +429,7 @@ export default function App() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <div>
-                      <div className="text-sm text-slate-500 mb-1">Actual End Date <Tooltip text="Where the student will actually finish based on their extension weeks used, after applying any Christmas Break credit." /></div>
+                      <div className="text-sm text-slate-500 mb-1">Actual End Date <Tooltip text="Where the student will actually finish based on their extension weeks used." /></div>
                       <div className="font-semibold text-slate-900">
                         {format(results.actualEndDate, 'MMM do, yyyy')}
                       </div>
@@ -394,15 +443,10 @@ export default function App() {
                     </div>
 
                     <div>
-                      <div className="text-sm text-slate-500 mb-1">Effective Extra Weeks <Tooltip text="The number of extra weeks counted after applying the Christmas Break credit (if any). This is the value compared against the Allowed Extensions limit to determine MBG eligibility." /></div>
+                      <div className="text-sm text-slate-500 mb-1">Effective Extra Weeks <Tooltip text="The number of extra weeks counted. This is the value compared against the Allowed Extensions limit to determine MBG eligibility." /></div>
                       <div className="font-semibold text-slate-900">
                         {results.effectiveExtraWeeks} weeks
                       </div>
-                      {results.qualifiesForChristmasBreak && (
-                        <div className="text-xs text-blue-600 mt-0.5 font-medium">
-                          (-1 wk Christmas credit)
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
