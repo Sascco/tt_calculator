@@ -128,6 +128,9 @@ export default function App() {
       status = 'exceeded';
     }
 
+    // 6. Legal Notice Date — must be sent within 2 days of the student becoming ineligible
+    const legalNoticeDate = addDays(mbgEndDate, 2);
+
     return {
       regularEndDate,
       mbgEndDate,
@@ -137,7 +140,8 @@ export default function App() {
       status,
       progData,
       programDays,
-      standardDays: regularDurationDays
+      standardDays: regularDurationDays,
+      legalNoticeDate
     };
   }, [program, startDate, extraWeeks, isValidDate, parsedStartDate]);
 
@@ -279,6 +283,36 @@ export default function App() {
                     </p>
                   </div>
                 </div>
+
+                {/* Legal Notice Banner — shown only when student has exceeded the MBG limit */}
+                {results.status === 'exceeded' && (
+                  <div className="rounded-2xl p-6 border border-red-300 bg-red-900 text-white shadow-sm flex items-start gap-4">
+                    <div className="shrink-0 mt-0.5">
+                      <AlertCircle className="w-7 h-7 text-red-300" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold mb-1 text-white">⚠️ Legal Notice Required</h3>
+                      <p className="text-sm text-red-100 leading-relaxed">
+                        This student is no longer eligible for the Money-Back Guarantee. Per internal policy, a{' '}
+                        <a
+                          href="https://www.notion.so/coding-bootcamps/MBG-Legal-Notice-LCs-ex-waivers-1c76ed1efc9380e4b7d0e1f32eb98eed#2ee6ed1efc938090bf00c09fad2f3485"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline font-semibold text-white hover:text-red-200 transition-colors"
+                        >
+                          Legal Notice
+                        </a>{' '}
+                        must be sent to the student to formally inform them of their ineligibility and its consequences — and to help prevent potential complaints after graduation.
+                      </p>
+                      <div className="mt-3 inline-flex items-center gap-2 bg-red-800 border border-red-600 rounded-lg px-3 py-2">
+                        <Clock className="w-4 h-4 text-red-300 shrink-0" />
+                        <span className="text-sm font-semibold text-white">
+                          Send no later than: {format(results.legalNoticeDate, 'MMM do, yyyy')}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Program Duration Banner */}
                 <div className="bg-white rounded-2xl border border-slate-200 shadow-sm px-6 py-4 flex items-center gap-3">
