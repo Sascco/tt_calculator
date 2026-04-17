@@ -116,15 +116,15 @@ A student who successfully completes the final sprint on **Wednesday, October 14
 
 The calculator automatically checks whether the student's study period (Start Date → Standard End Date) overlaps with any pre-defined Christmas holiday break. If it does, the student receives a **1-week automatic credit**.
 
-**Defined break periods:**
+**Defined break periods (always exactly 7 calendar days):**
 
 | Break Period |
 |---|
-| Dec 23, 2024 – Jan 5, 2025 |
-| Dec 22, 2025 – Jan 4, 2026 |
-| Dec 21, 2026 – Jan 3, 2027 |
-| Dec 20, 2027 – Jan 2, 2028 |
-| Dec 25, 2028 – Jan 7, 2029 |
+| Dec 25, 2024 – Jan 1, 2025 |
+| Dec 25, 2025 – Jan 1, 2026 |
+| Dec 25, 2026 – Jan 1, 2027 |
+| Dec 25, 2027 – Jan 1, 2028 |
+| Dec 25, 2028 – Jan 1, 2029 |
 
 **Overlap rule:** A student qualifies if their Start Date is before the break ends AND their Standard End Date is on or after the break starts.
 

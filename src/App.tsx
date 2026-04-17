@@ -59,11 +59,11 @@ function getProgramDays(programKey: ProgramKey, startDate: Date): number {
 }
 
 const CHRISTMAS_BREAKS = [
-  { start: parseISO('2024-12-23'), end: parseISO('2025-01-05') },
-  { start: parseISO('2025-12-22'), end: parseISO('2026-01-04') },
-  { start: parseISO('2026-12-21'), end: parseISO('2027-01-03') },
-  { start: parseISO('2027-12-20'), end: parseISO('2028-01-02') },
-  { start: parseISO('2028-12-25'), end: parseISO('2029-01-07') },
+  { start: parseISO('2024-12-25'), end: parseISO('2025-01-01') },
+  { start: parseISO('2025-12-25'), end: parseISO('2026-01-01') },
+  { start: parseISO('2026-12-25'), end: parseISO('2027-01-01') },
+  { start: parseISO('2027-12-25'), end: parseISO('2028-01-01') },
+  { start: parseISO('2028-12-25'), end: parseISO('2029-01-01') },
 ];
 
 export default function App() {
@@ -76,6 +76,8 @@ export default function App() {
   const parsedStartDate = parseISO(startDate);
   const isValidDate = isValid(parsedStartDate);
   const isBeforeMinDate = isValidDate && isBefore(parsedStartDate, minDate);
+  // All TripleTen cohorts start on Thursdays (getDay() === 4)
+  const isNotThursday = isValidDate && parsedStartDate.getDay() !== 4;
 
   // Calculations
   const results = useMemo(() => {
@@ -197,7 +199,7 @@ export default function App() {
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">
                     Starting Cohort Date
-                    <Tooltip text="The official date the student's cohort began. Must be November 14, 2024 or later — this calculator only applies to students on the new OTG day-based schedule." />
+                    <Tooltip text="The official date the student's cohort began. Must be November 14, 2024 or later. All TripleTen cohorts start on a Thursday — this calculator only applies to students on the new OTG day-based schedule." />
                   </label>
                   <input
                     type="date"
@@ -205,13 +207,21 @@ export default function App() {
                     onChange={(e) => setStartDate(e.target.value)}
                     className={cn(
                       "w-full rounded-lg border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-shadow",
-                      isBeforeMinDate ? "border-red-300 focus:ring-red-500" : "border-slate-300 focus:ring-blue-500"
+                      isBeforeMinDate ? "border-red-300 focus:ring-red-500" :
+                      isNotThursday ? "border-amber-300 focus:ring-amber-500" :
+                      "border-slate-300 focus:ring-blue-500"
                     )}
                   />
                   {isBeforeMinDate && (
                     <p className="mt-1.5 text-xs text-red-600 flex items-start gap-1">
                       <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
                       <span>This calculator is only applicable to students starting from Nov 14th, 2024.</span>
+                    </p>
+                  )}
+                  {!isBeforeMinDate && isNotThursday && (
+                    <p className="mt-1.5 text-xs text-amber-600 flex items-start gap-1">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                      <span>All TripleTen cohorts start on a Thursday. Please verify this date.</span>
                     </p>
                   )}
                 </div>
