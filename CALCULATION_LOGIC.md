@@ -20,35 +20,66 @@ The calculator takes three inputs from the user:
 
 | Program | Standard Duration | Max Extension Weeks |
 |---|---|---|
-| AI Software Engineering | 168 days | 12 weeks |
+| Software Engineering (Part-time) | 266 days | 19 weeks |
+| AI Software Engineering (Part-time) | 168 days | 12 weeks |
+| AI Software Engineering (Full-time) | 98 days | 12 weeks |
 | AI & Machine Learning | 252 days | 18 weeks |
 | Quality Assurance | 140 days | 10 weeks |
 | Business Intelligence Analytics | 112 days | 8 weeks |
-| Cybersecurity Analyst | **Variable** *(see CSA Duration Tiers below)* | 14 weeks |
-| UX/UI Design | 151 days | 10 weeks |
 | AI Automation | 98 days | 7 weeks |
-| Data Science | 228 days | 17 weeks |
-| Web Development | 266 days | 19 weeks |
+| Data Analitics New program | 98 days | 8 weeks |
+| Software Engineering (Full-time) | **Variable** *(see Duration Tiers below)* | 19 weeks |
+| Cyber Security (Part-time) | **Variable** *(see Duration Tiers below)* | 14 weeks |
+| Cyber Security (Full-time) | **Variable** *(see Duration Tiers below)* | 14 weeks |
+| Data Science | **Variable** *(see Duration Tiers below)* | 17 weeks |
+| UX/UI Design | **Variable** *(see Duration Tiers below)* | 10 weeks |
 
 - **Standard Duration**: The expected number of days to complete the program with zero extensions.
 - **Max Extension Weeks**: The maximum number of weeks a student can extend and still remain MBG eligible.
 
 ---
 
-## CSA Duration Tiers
+## Cohort-based Duration Tiers
 
-The Cybersecurity Analyst program has a **variable standard duration** depending on the student's cohort start date. The system automatically resolves the correct duration — no manual selection is needed.
+Several programs have a **variable standard duration** depending on the student's cohort start date. The system automatically resolves the correct duration — no manual selection is needed.
 
+### Software Engineering (Full-time)
+| Cohort Start Date Range | Standard Duration |
+|---|---|
+| Nov 14, 2024 – May 14, 2025 | **120 days** |
+| May 15, 2025 – Dec 29, 2025 | **126 days** |
+| Dec 30, 2025 – onwards | **154 days** |
+
+### Cyber Security (Part-time)
 | Cohort Start Date Range | Standard Duration |
 |---|---|
 | Nov 14, 2024 – Dec 29, 2025 | **196 days** |
 | Dec 30, 2025 – Feb 12, 2026 | **203 days** |
-| Feb 13, 2026 – present | **210 days** |
+| Feb 13, 2026 – onwards | **210 days** |
+
+### Cyber Security (Full-time)
+| Cohort Start Date Range | Standard Duration |
+|---|---|
+| Nov 14, 2024 – Dec 29, 2025 | **91 days** |
+| Dec 30, 2025 – Feb 12, 2026 | **112 days** |
+| Feb 13, 2026 – onwards | **119 days** |
+
+### Data Science
+| Cohort Start Date Range | Standard Duration |
+|---|---|
+| Nov 14, 2024 – Mar 09, 2025 | **224 days** |
+| Mar 10, 2025 – onwards | **231 days** |
+
+### UX/UI Design
+| Cohort Start Date Range | Standard Duration |
+|---|---|
+| Nov 14, 2024 – May 14, 2025 | **140 days** |
+| May 15, 2025 – onwards | **147 days** |
 
 > [!NOTE]
-> All CSA cohorts begin on a Thursday, so start dates naturally fall cleanly within one of the three ranges. The maximum allowed extension weeks remain **14 weeks** for all CSA tiers.
+> All cohorts begin on a Thursday. The maximum allowed extension weeks remain fixed for a given program across all its tiers.
 
-A **"Cohort-based duration"** badge is shown in the UI next to the Program Duration when a CSA student is selected.
+A **"Cohort-based duration"** badge is shown in the UI next to the Program Duration when a student in a variable-duration program is selected.
 
 ---
 

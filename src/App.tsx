@@ -126,6 +126,15 @@ const PROGRAMS: Record<string, ProgramFormat> = {
     name: 'AI Software Engineering (Full-time)',
     mbgWeeks: 12,
     defaultDays: 98,
+  },
+  // Data Analitics
+  'DA_NEW': {
+    name: 'Data Analitics New program',
+    mbgWeeks: 8,
+    defaultDays: 98,
+    tiers: [
+      { from: parseISO('2026-03-26'), to: null, days: 98 },
+    ]
   }
 };
 
