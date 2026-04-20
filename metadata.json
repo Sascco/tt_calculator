@@ -1,5 +1,5 @@
 {
-  "name": "TripleTen MBG Calculator",
+  "name": "TripleTen OTG Calculator",
   "description": "Calculates student progress, ending dates, and Money-Back Guarantee eligibility based on cohort start date and extension weeks.",
   "requestFramePermissions": []
 }

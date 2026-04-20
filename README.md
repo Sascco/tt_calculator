@@ -1,4 +1,4 @@
-# TripleTen MBG Calculator
+# TripleTen OTG Calculator
 
 A React application that calculates student progress, end dates, and Money-Back Guarantee (MBG) eligibility based on cohort start date, program, and extension weeks used.
 

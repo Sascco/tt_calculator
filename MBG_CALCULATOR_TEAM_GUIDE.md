@@ -1,6 +1,6 @@
 # TripleTen: Money-Back Guarantee (MBG) Calculator Guide
 
-Welcome! This guide is designed to help Learning Coaches, Advisors, and any team members understand how the MBG Calculator works. It requires **no coding experience** to understand. 
+Welcome! This guide is designed to help Learning Coaches, Advisors, and any team members understand how the OTG Calculator works. It requires **no coding experience** to understand. 
 
 The calculator takes the guesswork out of determining a student's final deadlines by processing three simple things: their **Program**, the **Date** they started, and the number of **Extension Weeks** they have used.
 

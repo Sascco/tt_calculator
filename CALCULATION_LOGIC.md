@@ -1,6 +1,6 @@
-# TripleTen MBG Calculator — Calculation Logic
+# TripleTen OTG Calculator — Calculation Logic
 
-This document explains, step by step, how the MBG Calculator computes all dates and determines a student's Money-Back Guarantee (MBG) eligibility. It is intended for internal use by Learning Coaches (LCs) and academic advisors.
+This document explains, step by step, how the OTG Calculator computes all dates and determines a student's Money-Back Guarantee (MBG) eligibility. It is intended for internal use by Learning Coaches (LCs) and academic advisors.
 
 ---
 
