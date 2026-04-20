@@ -489,7 +489,7 @@ export default function App() {
                     
                     {/* Start Date */}
                     <div className="absolute top-1/2 -mt-1.5 w-3 h-3 rounded-full bg-slate-300 border-2 border-white z-0" style={{ left: '0%', transform: 'translateX(-50%)' }}>
-                      <div className="absolute top-6 left-1/2 -translate-x-1/2 text-xs text-slate-500 font-medium whitespace-nowrap hidden sm:block">Start</div>
+                      <div className="absolute top-6 left-0 text-xs text-slate-500 font-medium whitespace-nowrap hidden sm:block">Start</div>
                     </div>
 
                     {/* Standard End Date */}
@@ -502,7 +502,7 @@ export default function App() {
 
                     {/* OTG/MBG Deadline */}
                     <div className="absolute top-1/2 -mt-1.5 w-3 h-3 rounded-full bg-red-400 border-2 border-white z-0" style={{ left: '100%', transform: 'translateX(-50%)' }}>
-                      <div className="absolute top-6 left-1/2 -translate-x-1/2 text-xs text-red-600 font-medium whitespace-nowrap hidden sm:block">Deadline</div>
+                      <div className="absolute top-6 right-0 text-xs text-red-600 font-medium whitespace-nowrap hidden sm:block">Deadline</div>
                     </div>
                     
                     {/* Today Marker */}
