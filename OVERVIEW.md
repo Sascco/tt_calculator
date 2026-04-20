@@ -13,7 +13,7 @@ The calculator relies entirely on **Cohort-based logic**, enforcing that real-wo
 1. **Intelligent Program Setup:** The system maps out every TripleTen program configuration internally, matching each course with its expected standard duration and maximum allowable extension weeks.
 2. **Date Extraction:** By taking the student's *Starting Cohort Date* (which defaults to Thursdays on the OTG day-based schedule), the system instantly compares that fixed origin against the program's requirements.
 3. **Real-time Assessment:** The application determines "Today's" exact position on the timeline in relation to the original start date and absolute deadlines.
-4. **Automated State Tracking:** Extra weeks are inherently extrapolated based on where "Today" sits relative to the standard graduation date. Since we removed the manual input for weeks, human error is completely eliminated. The calculator organically understands if a student is on track, in an extension grace period, or if they have actively breached the guarantee.
+4. **Automated State Tracking:** Extra weeks are inherently extrapolated based on where "Today" sits relative to the standard completion date. Since we removed the manual input for weeks, human error is completely eliminated. The calculator organically understands if a student is on track, in an extension grace period, or if they have actively breached the guarantee.
 
 ---
 
@@ -22,7 +22,7 @@ The calculator relies entirely on **Cohort-based logic**, enforcing that real-wo
 The UI focuses purely on synthesizing critical dates and urgency factors. Based on the selected program and cohort start date, it outputs the following metrics automatically:
 
 ### Core Dates
-*   **Standard End Date:** The target graduation date mathematically expected if a student completes the course linearly without utilizing any extension weeks.
+*   **Standard End Date:** The target completion date mathematically expected if a student completes the course linearly without utilizing any extension weeks.
 *   **MBG Deadline (OTG):** The absolute, non-negotiable maximum limit. A student can complete their final sprint precisely on this day and still qualify for the Money-Back Guarantee. Passing this date voids eligibility.
 
 ### Live Metrics (Derived from `Today`)
@@ -32,7 +32,7 @@ The UI focuses purely on synthesizing critical dates and urgency factors. Based 
 
 ### Legal Determinations
 *   **MBG Status:** Dynamically categorizes the student as:
-    *   ✅ **Within Regular Time** (Prior to standard graduation)
+    *   ✅ **Within Regular Time** (Prior to standard completion)
     *   ⏳ **Within MBG Period** (Using extension weeks but still legally covered)
     *   ❌ **Exceeded MBG Deadline** (Past the limit; actively ineligible)
 *   **Legal Notice Urgency:** If the student loses MBG eligibility, a rigid internal procedure takes effect. The calculator provides standard legal instructions mapped out to the single day—generating strict advisories like *"Send today,"* *"Due tomorrow,"* or *"Overdue by 3 day(s)"* representing when the academic counselor must formally notify the student of their MBG forfeiture.

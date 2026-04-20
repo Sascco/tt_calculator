@@ -289,23 +289,6 @@ export default function App() {
               </h2>
 
               <div className="space-y-5">
-                {/* Program Selection */}
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                    Program
-                    <Tooltip text="Select the student's enrolled program. Each program has a fixed duration and a maximum number of allowed extension weeks before MBG eligibility is lost." />
-                  </label>
-                  <select
-                    value={program}
-                    onChange={(e) => setProgram(e.target.value as ProgramKey)}
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF8A65] focus:border-transparent transition-shadow"
-                  >
-                    {Object.entries(PROGRAMS).map(([key, data]) => (
-                      <option key={key} value={key}>{data.name}</option>
-                    ))}
-                  </select>
-                </div>
-
                 {/* Start Date */}
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">
@@ -335,6 +318,23 @@ export default function App() {
                       <span>All TripleTen cohorts start on a Thursday. Please verify this date.</span>
                     </p>
                   )}
+                </div>
+
+                {/* Program Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    Program
+                    <Tooltip text="Select the student's enrolled program. Each program has a fixed duration and a maximum number of allowed extension weeks before MBG eligibility is lost." />
+                  </label>
+                  <select
+                    value={program}
+                    onChange={(e) => setProgram(e.target.value as ProgramKey)}
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF8A65] focus:border-transparent transition-shadow"
+                  >
+                    {Object.entries(PROGRAMS).map(([key, data]) => (
+                      <option key={key} value={key}>{data.name}</option>
+                    ))}
+                  </select>
                 </div>
 
 
@@ -412,7 +412,7 @@ export default function App() {
                         >
                           Legal Notice
                         </a>{' '}
-                        must be sent to the student to formally inform them of their ineligibility and its consequences — and to help prevent potential complaints after graduation.
+                        must be sent to the student to formally inform them of their ineligibility and its consequences — and to help prevent potential complaints after completion.
                       </p>
                       <div className="mt-3 inline-flex items-center gap-2 bg-red-800 border border-red-600 rounded-lg px-3 py-2">
                         <Clock className="w-4 h-4 text-red-300 shrink-0" />
@@ -475,7 +475,7 @@ export default function App() {
                 <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm mt-4">
                   <h3 className="text-sm font-medium text-slate-500 mb-6 flex items-center gap-2">
                     <Calendar className="w-4 h-4" /> <span className="uppercase tracking-wider">Timeline</span>
-                    <Tooltip text="A visual representation of the student's progress towards their On-Time Graduation and final Money-Back Guarantee deadline." />
+                    <Tooltip text="A visual representation of the student's progress towards their On-Time Completion and final Money-Back Guarantee deadline." />
                   </h3>
                   
                   {/* Visual Bar */}

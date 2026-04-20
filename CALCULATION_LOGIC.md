@@ -91,7 +91,7 @@ All examples below use: **Program = Quality Assurance, Start Date = March 11, 20
 
 ### Step 1 — Standard End Date
 
-The **Standard End Date** is the expected graduation date if the student uses **zero extension weeks**.
+The **Standard End Date** is the expected completion date if the student uses **zero extension weeks**.
 
 ```
 Standard End Date = Start Date + Standard Duration (days)
@@ -158,7 +158,7 @@ The student's eligibility status is determined by comparing **Extra Weeks Used**
 
 ### Step 5 — Legal Notice Date
 
-When a student's status is **Exceeded**, a [Legal Notice](https://www.notion.so/coding-bootcamps/MBG-Legal-Notice-LCs-ex-waivers-1c76ed1efc9380e4b7d0e1f32eb98eed#2ee6ed1efc938090bf00c09fad2f3485) must be sent to them as soon as possible. The Legal Notice is a formal document requested by the legal team to inform the student of their MBG ineligibility and its consequences — and to help prevent potential complaints after graduation.
+When a student's status is **Exceeded**, a [Legal Notice](https://www.notion.so/coding-bootcamps/MBG-Legal-Notice-LCs-ex-waivers-1c76ed1efc9380e4b7d0e1f32eb98eed#2ee6ed1efc938090bf00c09fad2f3485) must be sent to them as soon as possible. The Legal Notice is a formal document requested by the legal team to inform the student of their MBG ineligibility and its consequences — and to help prevent potential complaints after completion.
 
 ```
 Legal Notice Deadline = MBG Deadline + 2 days
