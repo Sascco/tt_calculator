@@ -331,9 +331,11 @@ export default function App() {
                     onChange={(e) => setProgram(e.target.value as ProgramKey)}
                     className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF8A65] focus:border-transparent transition-shadow"
                   >
-                    {Object.entries(PROGRAMS).map(([key, data]) => (
-                      <option key={key} value={key}>{data.name}</option>
-                    ))}
+                    {Object.entries(PROGRAMS)
+                      .sort((a, b) => a[1].name.localeCompare(b[1].name))
+                      .map(([key, data]) => (
+                        <option key={key} value={key}>{data.name}</option>
+                      ))}
                   </select>
                 </div>
 
