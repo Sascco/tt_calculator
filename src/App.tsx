@@ -31,6 +31,9 @@ type ProgramFormat = {
   mbgWeeks: number;
   defaultDays: number;
   tiers?: ProgramTier[];
+  availableFrom?: string;
+  availableTo?: string;
+  unavailablePeriods?: { from: string; to: string }[];
 };
 
 const PROGRAMS: Record<string, ProgramFormat> = {
@@ -72,6 +75,7 @@ const PROGRAMS: Record<string, ProgramFormat> = {
     name: 'Business Intelligence Analytics',
     mbgWeeks: 8,
     defaultDays: 112,
+    availableTo: '2026-02-19',
   },
   // Cybersecurity Analyst
   'CSA_PT': {
@@ -115,23 +119,27 @@ const PROGRAMS: Record<string, ProgramFormat> = {
     name: 'AI & Machine Learning',
     mbgWeeks: 18,
     defaultDays: 252,
+    availableFrom: '2025-10-09',
   },
   // AI Software Engineering
   'AISE_PT': {
     name: 'AI Software Engineering (Part-time)',
     mbgWeeks: 12,
     defaultDays: 168,
+    unavailablePeriods: [{ from: '2026-01-23', to: '2026-03-11' }],
   },
   'AISE_FT': {
     name: 'AI Software Engineering (Full-time)',
     mbgWeeks: 12,
     defaultDays: 98,
+    unavailablePeriods: [{ from: '2026-01-23', to: '2026-03-11' }],
   },
   // Data Analitics
   'DA_NEW': {
     name: 'Data Analitics New program',
     mbgWeeks: 8,
     defaultDays: 98,
+    availableFrom: '2026-03-26',
     tiers: [
       { from: parseISO('2026-03-26'), to: null, days: 98 },
     ]
@@ -212,7 +220,22 @@ export default function App() {
     // 6. Legal Notice Date — must be sent within 2 days of the student becoming ineligible
     const legalNoticeDate = addDays(mbgEndDate, 2);
 
-    // 7. Today-derived fields
+    // 7. Availability Check
+    let isAvailable = true;
+    if (progData.availableFrom && isBefore(parsedStartDate, parseISO(progData.availableFrom))) {
+      isAvailable = false;
+    }
+    if (progData.availableTo && isBefore(parseISO(progData.availableTo), parsedStartDate)) {
+      isAvailable = false;
+    }
+    if (progData.unavailablePeriods) {
+      const isInGap = progData.unavailablePeriods.some((p: any) => 
+        !isBefore(parsedStartDate, parseISO(p.from)) && !isBefore(parseISO(p.to), parsedStartDate)
+      );
+      if (isInGap) isAvailable = false;
+    }
+
+    // 8. Today-derived fields
     const daysLeft = differenceInDays(mbgEndDate, today);
     const isProximityAlert = status !== 'exceeded' && daysLeft >= 0 && daysLeft <= 14;
 
@@ -241,6 +264,7 @@ export default function App() {
       legalNoticeUrgency,
       progressPercent,
       standardEndPercent,
+      isAvailable,
       today
     };
 
@@ -269,7 +293,7 @@ export default function App() {
           </div>
           <div>
             <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">
-              Tripleten OTG Calculator
+              Tripleten OTC Calculator
             </h1>
             <p className="text-slate-500 mt-1">
               This calculator effectively provides each student's progress based on their starting date while accounting for extension weeks. It also determines ending dates and actual eligibility for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank" rel="noopener noreferrer" className="text-[#FF8A65] hover:underline font-medium">Money-Back Guarantee</a>.
@@ -341,6 +365,15 @@ export default function App() {
 
 
 
+                {/* Availability Warning */}
+                {results && !results.todayDerivedFields.isAvailable && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-start gap-2">
+                    <AlertCircle className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+                    <p className="text-xs text-amber-800 leading-normal font-medium">
+                      The selected program was not available at the selected starting date. Please double-check the enrollment data.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
