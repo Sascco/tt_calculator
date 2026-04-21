@@ -296,7 +296,7 @@ export default function App() {
               Tripleten OTC Calculator
             </h1>
             <p className="text-slate-500 mt-1">
-              This calculator effectively provides each student's progress based on their starting date while accounting for extension weeks. It also determines ending dates and actual eligibility for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank" rel="noopener noreferrer" className="text-[#FF8A65] hover:underline font-medium">Money-Back Guarantee</a>.
+              This calculator effectively provides each student's progress based on their starting date. It also determines ending dates and eligibility for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank" rel="noopener noreferrer" className="text-[#FF8A65] hover:underline font-medium">Money-Back Guarantee</a>.
             </p>
           </div>
         </header>
