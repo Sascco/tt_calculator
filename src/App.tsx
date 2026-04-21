@@ -136,7 +136,7 @@ const PROGRAMS: Record<string, ProgramFormat> = {
   },
   // Data Analitics
   'DA_NEW': {
-    name: 'Data Analitics New program',
+    name: 'Data Analitics',
     mbgWeeks: 8,
     defaultDays: 98,
     availableFrom: '2026-03-26',
@@ -243,7 +243,7 @@ export default function App() {
     if (status === 'exceeded') {
       const urgencyDays = differenceInDays(legalNoticeDate, today);
       if (urgencyDays < 0) {
-        legalNoticeUrgency = `Overdue by ${Math.abs(urgencyDays)} day(s)`;
+        legalNoticeUrgency = `Send after by ${Math.abs(urgencyDays)} day(s)`;
       } else if (urgencyDays === 0) {
         legalNoticeUrgency = 'Send today';
       } else if (urgencyDays === 1) {
@@ -370,19 +370,19 @@ export default function App() {
                   <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-start gap-2">
                     <AlertCircle className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
                     <p className="text-xs text-amber-800 leading-normal font-medium">
-                      The selected program was not available at the selected starting date. Please double-check the enrollment data.
+                      The selected program was not available by the selected starting date. Please double-check the enrollment data.
                     </p>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Program Duration Banner */}
+            {/* Program Length Banner */}
             {results && (
               <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col gap-2">
                 <div className="flex items-center gap-2 text-slate-500 text-sm font-medium uppercase tracking-wider">
                   <Clock className="w-4 h-4 text-[#FF8A65]" />
-                  <span>Program Duration</span>
+                  <span>Program Length</span>
                 </div>
                 <div className="flex items-baseline gap-3 flex-wrap mt-1">
                   <span className="text-3xl font-bold text-slate-900">
@@ -468,7 +468,7 @@ export default function App() {
                     <div className="flex items-center gap-2 text-slate-500 mb-2">
                       <Calendar className="w-4 h-4" />
                       <span className="text-sm font-medium uppercase tracking-wider">Standard End Date</span>
-                      <Tooltip text="The targeted completion date if the student uses no extensions. Calculated as the MBG Deadline minus the program's maximum allowed extension weeks." />
+                      <Tooltip text="The targeted completion date if the student uses no extensions." />
                     </div>
                     <div className="text-2xl font-bold text-slate-900">
                       {format(results.regularEndDate, 'MMM do, yyyy')}
@@ -482,7 +482,7 @@ export default function App() {
                     <div className="flex items-center gap-2 text-slate-500 mb-2">
                       <Calendar className="w-4 h-4" />
                       <span className="text-sm font-medium uppercase tracking-wider">MBG Deadline (OTG)</span>
-                      <Tooltip text="The absolute latest date the student can complete their program and remain eligible for the Money-Back Guarantee. Calculated as Start Date + Program Duration. No extensions can push this date forward." />
+                      <Tooltip text="The absolute latest date the student can complete their program and remain eligible for the Money-Back Guarantee. The specific timeframes for timely completion are set as 1.5 times the enrollment period" />
                     </div>
                     <div className="text-2xl font-bold text-slate-900">
                       {format(results.mbgEndDate, 'MMM do, yyyy')}
