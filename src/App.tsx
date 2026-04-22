@@ -400,8 +400,8 @@ export default function App() {
                       {results.status === 'exceeded' && "❌ Exceeded MBG Deadline"}
                     </h3>
                     <p className="text-sm opacity-90">
-                      {results.status === 'regular' && `Student used 0 extra weeks and is fully eligible.`}
-                      {results.status === 'mbg' && `Student is using extension weeks but is within the ${results.programDays}-day OTC limit.`}
+                      {results.status === 'regular' && `Student is within the standard completion timeframe and is fully eligible.`}
+                      {results.status === 'mbg' && `Student is within the ${results.programDays}-day OTC limit and remains fully eligible.`}
                       {results.status === 'exceeded' && `Student passed the OTC deadline, exceeding the ${results.programDays}-day limit.`}
                     </p>
                   </div>
