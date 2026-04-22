@@ -40,16 +40,13 @@ const PROGRAMS: Record<string, ProgramFormat> = {
   // Software Engineering
   'SE_PT': {
     name: 'Software Engineering (Part-time)',
-    mbgWeeks: 19,
     defaultDays: 266,
   },
   'SE_FT': {
     name: 'Software Engineering (Full-time)',
-    mbgWeeks: 19,
-    defaultDays: 120, // using the earliest known figure
+    defaultDays: 120,
     tiers: [
-      { from: parseISO('2024-11-14'), to: parseISO('2025-03-09'), days: 120 },
-      { from: parseISO('2025-03-10'), to: parseISO('2025-05-14'), days: 120 },
+      { from: parseISO('2024-11-14'), to: parseISO('2025-05-14'), days: 120 },
       { from: parseISO('2025-05-15'), to: parseISO('2025-12-29'), days: 126 },
       { from: parseISO('2025-12-30'), to: null, days: 154 },
     ]
@@ -57,7 +54,6 @@ const PROGRAMS: Record<string, ProgramFormat> = {
   // Data Science
   'DS_NEW': {
     name: 'Data Science',
-    mbgWeeks: 17,
     defaultDays: 224,
     tiers: [
       { from: parseISO('2024-11-14'), to: parseISO('2025-03-09'), days: 224 },
@@ -67,20 +63,17 @@ const PROGRAMS: Record<string, ProgramFormat> = {
   // Quality Assurance
   'QA_NEW': {
     name: 'Quality Assurance',
-    mbgWeeks: 10,
     defaultDays: 140,
   },
   // BI Analyst
   'BI_NEW': {
     name: 'Business Intelligence Analytics',
-    mbgWeeks: 8,
     defaultDays: 112,
     availableTo: '2026-02-19',
   },
   // Cybersecurity Analyst
   'CSA_PT': {
     name: 'Cyber Security (Part-time)',
-    mbgWeeks: 14,
     defaultDays: 196,
     tiers: [
       { from: parseISO('2024-11-14'), to: parseISO('2025-12-29'), days: 196 },
@@ -90,7 +83,6 @@ const PROGRAMS: Record<string, ProgramFormat> = {
   },
   'CSA_FT': {
     name: 'Cyber Security (Full-time)',
-    mbgWeeks: 14, 
     defaultDays: 91,
     tiers: [
       { from: parseISO('2024-11-14'), to: parseISO('2025-12-29'), days: 91 },
@@ -101,7 +93,6 @@ const PROGRAMS: Record<string, ProgramFormat> = {
   // UX/UI Design
   'UXUI_NEW': {
     name: 'UX/UI Design',
-    mbgWeeks: 10,
     defaultDays: 140,
     tiers: [
       { from: parseISO('2024-11-14'), to: parseISO('2025-05-14'), days: 140 },
@@ -111,33 +102,28 @@ const PROGRAMS: Record<string, ProgramFormat> = {
   // AI Automation
   'AIAUTO_NEW': {
     name: 'AI Automation',
-    mbgWeeks: 7,
     defaultDays: 98,
   },
   // AI and Machine Learning
   'AIML_NEW': {
     name: 'AI & Machine Learning',
-    mbgWeeks: 18,
     defaultDays: 252,
     availableFrom: '2025-10-09',
   },
   // AI Software Engineering
   'AISE_PT': {
     name: 'AI Software Engineering (Part-time)',
-    mbgWeeks: 12,
     defaultDays: 168,
     unavailablePeriods: [{ from: '2026-01-23', to: '2026-03-11' }],
   },
   'AISE_FT': {
     name: 'AI Software Engineering (Full-time)',
-    mbgWeeks: 12,
     defaultDays: 98,
     unavailablePeriods: [{ from: '2026-01-23', to: '2026-03-11' }],
   },
-  // Data Analitics
+  // Data Analytics
   'DA_NEW': {
-    name: 'Data Analitics',
-    mbgWeeks: 8,
+    name: 'Data Analytics',
     defaultDays: 98,
     availableFrom: '2026-03-26',
     tiers: [
@@ -178,47 +164,41 @@ export default function App() {
   const results = useMemo(() => {
     if (!isValidDate) return null;
 
-    const progData = PROGRAMS[program] as any;
-    const numericExtraWeeks = typeof extraWeeks === 'string' ? parseInt(extraWeeks) || 0 : extraWeeks;
-
     // 1. Calculate Regular End Date
     const regularDurationDays = getStandardDays(program, parsedStartDate);
-    const programDays = regularDurationDays + (progData.mbgWeeks * 7);
-    const regularEndDate = addDays(parsedStartDate, regularDurationDays);
+    const standardEndDate = addDays(parsedStartDate, regularDurationDays);
 
-    // 2. Calculate MBG Deadline
-    // The MBG Deadline = Standard End Date + (Max Extension Weeks × 7)
-    const mbgEndDate = addDays(regularEndDate, progData.mbgWeeks * 7);
+    // 2. Calculate MBG Deadline (OTG)
+    // The MBG Deadline = Start Date + (Standard Duration * 1.5)
+    const mbgEndDate = addDays(parsedStartDate, Math.floor(regularDurationDays * 1.5));
+    const maxExtensionDays = differenceInDays(mbgEndDate, standardEndDate);
+    const maxExtensionWeeks = Math.floor(maxExtensionDays / 7);
 
+    // 3. Current Progress
     let calculatedExtraWeeks = 0;
-    if (isBefore(regularEndDate, today)) {
-      const msPassed = differenceInDays(today, regularEndDate);
-      calculatedExtraWeeks = Math.ceil(msPassed / 7);
+    if (isBefore(standardEndDate, today)) {
+      const daysPassed = differenceInDays(today, standardEndDate);
+      calculatedExtraWeeks = Math.ceil(daysPassed / 7);
     }
     const effectiveExtraWeeks = calculatedExtraWeeks;
 
     // 4. Actual End Date
-    let actualEndDate;
-    if (effectiveExtraWeeks === 0) {
-      actualEndDate = regularEndDate;
-    } else {
-      actualEndDate = addDays(regularEndDate, effectiveExtraWeeks * 7);
-    }
+    const actualEndDate = addDays(standardEndDate, effectiveExtraWeeks * 7);
 
     // 5. Status
-    // The 7-day cycle buffer is already baked into mbgEndDate and actualEndDate,
-    // so eligibility simply checks whether extra weeks are within the program's allowed limit.
     let status: 'regular' | 'mbg' | 'exceeded' = 'regular';
     if (effectiveExtraWeeks === 0) {
       status = 'regular';
-    } else if (effectiveExtraWeeks <= progData.mbgWeeks) {
+    } else if (isBefore(today, addDays(mbgEndDate, 1))) {
       status = 'mbg';
     } else {
       status = 'exceeded';
     }
 
-    // 6. Legal Notice Date — must be sent within 2 days of the student becoming ineligible
+    // 6. Legal Notice Date
     const legalNoticeDate = addDays(mbgEndDate, 2);
+
+    const progData = PROGRAMS[program];
 
     // 7. Availability Check
     let isAvailable = true;
@@ -229,7 +209,7 @@ export default function App() {
       isAvailable = false;
     }
     if (progData.unavailablePeriods) {
-      const isInGap = progData.unavailablePeriods.some((p: any) => 
+      const isInGap = progData.unavailablePeriods.some((p: any) =>
         !isBefore(parsedStartDate, parseISO(p.from)) && !isBefore(parseISO(p.to), parsedStartDate)
       );
       if (isInGap) isAvailable = false;
@@ -241,15 +221,13 @@ export default function App() {
 
     let legalNoticeUrgency = '';
     if (status === 'exceeded') {
-      const urgencyDays = differenceInDays(legalNoticeDate, today);
-      if (urgencyDays < 0) {
-        legalNoticeUrgency = `Send after by ${Math.abs(urgencyDays)} day(s)`;
-      } else if (urgencyDays === 0) {
-        legalNoticeUrgency = 'Send today';
-      } else if (urgencyDays === 1) {
-        legalNoticeUrgency = 'Due tomorrow';
+      const urgencyDays = differenceInDays(today, mbgEndDate);
+      const formattedDeadline = format(mbgEndDate, 'MMM do, yyyy');
+      
+      if (urgencyDays > 0) {
+        legalNoticeUrgency = `Send after ${formattedDeadline} (Overdue by ${urgencyDays} day(s))`;
       } else {
-        legalNoticeUrgency = `Due in ${urgencyDays} day(s)`;
+        legalNoticeUrgency = `Send after ${formattedDeadline}`;
       }
     }
 
@@ -269,13 +247,13 @@ export default function App() {
     };
 
     return {
-      regularEndDate,
+      regularEndDate: standardEndDate,
       mbgEndDate,
       actualEndDate,
       effectiveExtraWeeks,
       status,
-      progData,
-      programDays,
+      progData: PROGRAMS[program],
+      programDays: Math.floor(regularDurationDays * 1.5),
       standardDays: regularDurationDays,
       legalNoticeDate,
       todayDerivedFields
@@ -296,7 +274,7 @@ export default function App() {
               Tripleten OTC Calculator
             </h1>
             <p className="text-slate-500 mt-1">
-              This calculator effectively provides each student's progress based on their starting date. It also determines ending dates and eligibility for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank" rel="noopener noreferrer" className="text-[#FF8A65] hover:underline font-medium">Money-Back Guarantee</a>.
+              This calculator effectively provides each student's progress based on their starting date while accounting for extension weeks. It also determines ending dates and actual eligibility for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank" rel="noopener noreferrer" className="text-[#FF8A65] hover:underline font-medium">On-Time Completion Guarantee</a>.
             </p>
           </div>
         </header>
@@ -326,8 +304,8 @@ export default function App() {
                     className={cn(
                       "w-full rounded-lg border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-shadow",
                       isBeforeMinDate ? "border-red-300 focus:ring-red-500" :
-                      isNotThursday ? "border-amber-300 focus:ring-amber-500" :
-                      "border-slate-300 focus:ring-[#FF8A65]"
+                        isNotThursday ? "border-amber-300 focus:ring-amber-500" :
+                          "border-slate-300 focus:ring-[#FF8A65]"
                     )}
                   />
                   {isBeforeMinDate && (
@@ -396,7 +374,7 @@ export default function App() {
                 </div>
               </div>
             )}
-            
+
           </div>
 
           {/* Results Column */}
@@ -423,8 +401,8 @@ export default function App() {
                     </h3>
                     <p className="text-sm opacity-90">
                       {results.status === 'regular' && `Student used 0 extra weeks and is fully eligible.`}
-                      {results.status === 'mbg' && `Student used ${results.effectiveExtraWeeks} extra weeks (Limit: ${results.progData.mbgWeeks}). Still eligible.`}
-                      {results.status === 'exceeded' && `Student used ${results.effectiveExtraWeeks} extra weeks, exceeding the ${results.progData.mbgWeeks} week limit.`}
+                      {results.status === 'mbg' && `Student is using extension weeks but is within the ${results.programDays}-day OTC limit.`}
+                      {results.status === 'exceeded' && `Student passed the OTC deadline, exceeding the ${results.programDays}-day limit.`}
                     </p>
                   </div>
                 </div>
@@ -452,7 +430,7 @@ export default function App() {
                       <div className="mt-3 inline-flex items-center gap-2 bg-red-800 border border-red-600 rounded-lg px-3 py-2">
                         <Clock className="w-4 h-4 text-red-300 shrink-0" />
                         <span className="text-sm font-semibold text-white">
-                          {results.todayDerivedFields.legalNoticeUrgency} 
+                          {results.todayDerivedFields.legalNoticeUrgency}
                           <span className="opacity-75 font-normal ml-2">({format(results.legalNoticeDate, 'MMM do, yyyy')})</span>
                         </span>
                       </div>
@@ -500,7 +478,7 @@ export default function App() {
                     <div>
                       <h4 className="text-amber-900 font-bold text-sm">Approaching MBG Deadline</h4>
                       <p className="text-amber-800 text-sm">
-                        Only {results.todayDerivedFields.daysLeft} day(s) left until the OTG Deadline.
+                        Only {results.todayDerivedFields.daysLeft} day(s) left until the OTC Deadline.
                       </p>
                     </div>
                   </div>
@@ -510,26 +488,26 @@ export default function App() {
                 <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm mt-4">
                   <h3 className="text-sm font-medium text-slate-500 mb-6 flex items-center gap-2">
                     <Calendar className="w-4 h-4" /> <span className="uppercase tracking-wider">Timeline</span>
-                    <Tooltip text="A visual representation of the student's progress towards their On-Time Completion and final Money-Back Guarantee deadline." />
+                    <Tooltip text="A visual representation of the student's progress towards their On-Time Completion and final OTC deadline." />
                   </h3>
-                  
+
                   {/* Visual Bar */}
                   <div className="relative w-full h-3 bg-slate-100 rounded-full mb-10 overflow-visible border border-slate-200">
-                    <div 
-                      className="absolute top-0 left-0 h-full bg-[#FF8A65] rounded-full transition-all duration-500 shadow-sm" 
+                    <div
+                      className="absolute top-0 left-0 h-full bg-[#FF8A65] rounded-full transition-all duration-500 shadow-sm"
                       style={{ width: `${results.todayDerivedFields.progressPercent}%` }}
                     />
-                    
+
                     {/* Markers */}
-                    
+
                     {/* Start Date */}
                     <div className="absolute top-1/2 -mt-1.5 w-3 h-3 rounded-full bg-slate-300 border-2 border-white z-0" style={{ left: '0%', transform: 'translateX(-50%)' }}>
                       <div className="absolute top-6 left-0 text-xs text-slate-500 font-medium whitespace-nowrap hidden sm:block">Start</div>
                     </div>
 
                     {/* Standard End Date */}
-                    <div 
-                      className="absolute top-1/2 -mt-1.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white z-0" 
+                    <div
+                      className="absolute top-1/2 -mt-1.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white z-0"
                       style={{ left: `${results.todayDerivedFields.standardEndPercent}%`, transform: 'translateX(-50%)' }}
                     >
                       <div className="absolute top-6 left-1/2 -translate-x-1/2 text-xs text-emerald-600 font-medium whitespace-nowrap">Standard End</div>
@@ -539,10 +517,10 @@ export default function App() {
                     <div className="absolute top-1/2 -mt-1.5 w-3 h-3 rounded-full bg-red-400 border-2 border-white z-0" style={{ left: '100%', transform: 'translateX(-50%)' }}>
                       <div className="absolute top-6 right-0 text-xs text-red-600 font-medium whitespace-nowrap hidden sm:block">Deadline</div>
                     </div>
-                    
+
                     {/* Today Marker */}
-                    <div 
-                      className="absolute -top-2 bottom-0 w-1 bg-slate-900 z-10 rounded-full shadow-lg" 
+                    <div
+                      className="absolute -top-2 bottom-0 w-1 bg-slate-900 z-10 rounded-full shadow-lg"
                       style={{ left: `${results.todayDerivedFields.progressPercent}%`, transform: 'translateX(-50%)', height: 'calc(100% + 16px)' }}
                     >
                       <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 text-xs font-bold text-slate-900 bg-white px-2 py-1 rounded shadow-sm border border-slate-200 whitespace-nowrap">
