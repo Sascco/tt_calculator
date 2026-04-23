@@ -584,15 +584,15 @@ for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank
                   <ul className="text-sm text-slate-600 space-y-2 text-left">
                     <li className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-[#FF8A65]" />
-                      <span>Precise completion dates based on program tiers</span>
+                      <span>Precise completion dates based on program tiers.</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-[#FF8A65]" />
-                      <span>Automated eligibility status (Regular vs. MBG)</span>
+                      <span>Automated eligibility status (Regular vs. MBG).</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-[#FF8A65]" />
-                      <span>Legal notice alerts for exceeded deadlines</span>
+                      <span>Legal notice alerts for exceeded deadlines.</span>
                     </li>
                   </ul>
                 </div>
