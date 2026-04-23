@@ -1,7 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { addWeeks, addDays, differenceInDays, format, isBefore, parseISO, isValid } from 'date-fns';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import { Calendar, Clock, AlertCircle, CheckCircle2, XCircle, Info, Calculator, GraduationCap, ShieldCheck, ShieldAlert, ShieldX } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -149,13 +147,13 @@ function getStandardDays(programKey: ProgramKey, startDate: Date): number {
 
 export default function App() {
   const [program, setProgram] = useState<ProgramKey | ''>('');
-  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [startDate, setStartDate] = useState<string>('');
   const [extraWeeks, setExtraWeeks] = useState<number | string>(0);
 
   // Validation
   const minDate = parseISO('2024-11-14');
-  const parsedStartDate = startDate || new Date(0);
-  const isValidDate = startDate !== null && isValid(startDate);
+  const parsedStartDate = parseISO(startDate);
+  const isValidDate = isValid(parsedStartDate);
   const isBeforeMinDate = isValidDate && isBefore(parsedStartDate, minDate);
   // All TripleTen cohorts start on Thursdays (getDay() === 4)
   const isNotThursday = isValidDate && parsedStartDate.getDay() !== 4;
@@ -294,39 +292,6 @@ for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank
               </h2>
 
               <div className="space-y-5">
-                {/* Start Date */}
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                    Starting Cohort Date
-                    <Tooltip text="The official date the student's cohort began. Must be 11 / 14 / 2024 or later. All TripleTen cohorts start on a Thursday — this calculator only applies to students on the new OTG day-based schedule." />
-                  </label>
-                  <DatePicker
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                    placeholderText="Select a date..."
-                    dateFormat="MM / dd / yyyy"
-                    className={cn(
-                      "w-full rounded-lg border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-shadow",
-                      isBeforeMinDate ? "border-red-300 focus:ring-red-500" :
-                        isNotThursday ? "border-amber-300 focus:ring-amber-500" :
-                          "border-slate-300 focus:ring-[#FF8A65]"
-                    )}
-                    wrapperClassName="w-full"
-                  />
-                  {isBeforeMinDate && (
-                    <p className="mt-1.5 text-xs text-red-600 flex items-start gap-1">
-                      <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-                      <span>This calculator is only applicable to students starting from 11 / 14 / 2024.</span>
-                    </p>
-                  )}
-                  {!isBeforeMinDate && isNotThursday && (
-                    <p className="mt-1.5 text-xs text-amber-600 flex items-start gap-1">
-                      <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-                      <span>All TripleTen cohorts start on a Thursday. Please verify this date.</span>
-                    </p>
-                  )}
-                </div>
-
                 {/* Program Selection */}
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">
@@ -345,6 +310,47 @@ for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank
                         <option key={key} value={key}>{data.name}</option>
                       ))}
                   </select>
+                </div>
+
+                {/* Start Date */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                    Starting Cohort Date
+                    <Tooltip text="The official date the student's cohort began. Must be 11 / 14 / 2024 or later. All TripleTen cohorts start on a Thursday — this calculator only applies to students on the new OTG day-based schedule." />
+                  </label>
+                  <div className={cn(
+                    "relative group w-full rounded-lg border bg-white transition-shadow focus-within:ring-2 focus-within:border-transparent",
+                    isBeforeMinDate ? "border-red-300 focus-within:ring-red-500" :
+                      isNotThursday ? "border-amber-300 focus-within:ring-amber-500" :
+                        "border-slate-300 focus-within:ring-[#FF8A65]"
+                  )}>
+                    {/* Visual Display (Underneath) */}
+                    <div className="flex items-center justify-between px-3 py-2 pointer-events-none">
+                      <span className="text-sm text-slate-900">
+                        {startDate ? format(parsedStartDate, 'MM / dd / yyyy') : <span className="text-slate-400">MM / DD / YYYY</span>}
+                      </span>
+                      <Calendar className="w-4 h-4 text-slate-400" />
+                    </div>
+                    {/* Native Picker (On Top, Invisible) */}
+                    <input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                  </div>
+                  {isBeforeMinDate && (
+                    <p className="mt-1.5 text-xs text-red-600 flex items-start gap-1">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                      <span>This calculator is only applicable to students starting from 11 / 14 / 2024.</span>
+                    </p>
+                  )}
+                  {!isBeforeMinDate && isNotThursday && (
+                    <p className="mt-1.5 text-xs text-amber-600 flex items-start gap-1">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                      <span>All TripleTen cohorts start on a Thursday. Please verify this date.</span>
+                    </p>
+                  )}
                 </div>
 
 
@@ -552,7 +558,7 @@ for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank
                     <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center mb-3 shadow-sm border border-slate-200">
                       <GraduationCap className="w-4 h-4 text-[#FF8A65]" />
                     </div>
-                    <h4 className="font-bold text-slate-900 text-sm mb-1">1. Pick Program</h4>
+                    <h4 className="font-bold text-slate-900 text-sm mb-1">1. Select a Program</h4>
                     <p className="text-xs text-slate-500">Select the student's specific program format.</p>
                   </div>
 
