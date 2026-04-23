@@ -146,8 +146,8 @@ function getStandardDays(programKey: ProgramKey, startDate: Date): number {
 }
 
 export default function App() {
-  const [program, setProgram] = useState<ProgramKey>('QA_NEW');
-  const [startDate, setStartDate] = useState<string>('2024-11-14');
+  const [program, setProgram] = useState<ProgramKey | ''>('');
+  const [startDate, setStartDate] = useState<string>('');
   const [extraWeeks, setExtraWeeks] = useState<number | string>(0);
 
   // Validation
@@ -162,7 +162,7 @@ export default function App() {
 
   // Calculations
   const results = useMemo(() => {
-    if (!isValidDate) return null;
+    if (!isValidDate || !program) return null;
 
     // 1. Calculate Regular End Date
     const regularDurationDays = getStandardDays(program, parsedStartDate);
@@ -223,7 +223,7 @@ export default function App() {
     if (status === 'exceeded') {
       const urgencyDays = differenceInDays(today, mbgEndDate);
       const formattedDeadline = format(mbgEndDate, 'MMM do, yyyy');
-      
+
       if (urgencyDays > 0) {
         legalNoticeUrgency = `Send after ${formattedDeadline} (Overdue by ${urgencyDays} day(s))`;
       } else {
@@ -274,7 +274,7 @@ export default function App() {
               Tripleten OTC Calculator
             </h1>
             <p className="text-slate-500 mt-1">
-              This calculator effectively provides each student's progress based on their starting date while accounting for extension weeks. It also determines ending dates and actual eligibility for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank" rel="noopener noreferrer" className="text-[#FF8A65] hover:underline font-medium">On-Time Completion Guarantee</a>.
+              The On Time Completion calculator effectively provides each student's progress based on their starting date while accounting for extension weeks. It also determines ending dates and actual eligibility for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank" rel="noopener noreferrer" className="text-[#FF8A65] hover:underline font-medium">On-Time Completion Guarantee</a>.
             </p>
           </div>
         </header>
@@ -333,6 +333,7 @@ export default function App() {
                     onChange={(e) => setProgram(e.target.value as ProgramKey)}
                     className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF8A65] focus:border-transparent transition-shadow"
                   >
+                    <option value="" disabled>Select a program...</option>
                     {Object.entries(PROGRAMS)
                       .sort((a, b) => a[1].name.localeCompare(b[1].name))
                       .map(([key, data]) => (
@@ -532,12 +533,58 @@ export default function App() {
 
               </>
             ) : (
-              <div className="bg-white rounded-2xl p-12 border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center h-full min-h-[400px]">
-                <Calendar className="w-12 h-12 text-slate-300 mb-4" />
-                <h3 className="text-lg font-medium text-slate-900 mb-2">Select a Date</h3>
-                <p className="text-slate-500 max-w-sm">
-                  Enter a valid starting cohort date to see the calculations.
+              <div className="bg-white rounded-2xl p-8 md:p-12 border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center h-full min-h-[500px]">
+                <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-6 border border-slate-100">
+                  <Calculator className="w-8 h-8 text-[#FF8A65]" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">Welcome to the OTC Calculator</h3>
+                <p className="text-slate-500 max-w-md mb-10 leading-relaxed">
+                  Calculate On-Time Completion (OTC) deadlines and track student progress with ease. Follow these steps to get started:
                 </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left w-full max-w-3xl">
+                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center mb-3 shadow-sm border border-slate-200">
+                      <GraduationCap className="w-4 h-4 text-[#FF8A65]" />
+                    </div>
+                    <h4 className="font-bold text-slate-900 text-sm mb-1">1. Pick Program</h4>
+                    <p className="text-xs text-slate-500">Select the student's specific program format.</p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center mb-3 shadow-sm border border-slate-200">
+                      <Calendar className="w-4 h-4 text-[#FF8A65]" />
+                    </div>
+                    <h4 className="font-bold text-slate-900 text-sm mb-1">2. Set Start Date</h4>
+                    <p className="text-xs text-slate-500">Enter the Thursday their cohort officially began.</p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center mb-3 shadow-sm border border-slate-200">
+                      <ShieldCheck className="w-4 h-4 text-[#FF8A65]" />
+                    </div>
+                    <h4 className="font-bold text-slate-900 text-sm mb-1">3. View Results</h4>
+                    <p className="text-xs text-slate-500">Get the Standard End Date and the absolute MBG Deadline.</p>
+                  </div>
+                </div>
+
+                <div className="mt-10 pt-8 border-t border-slate-100 w-full max-w-md">
+                  <p className="text-xs font-medium text-slate-400 uppercase tracking-widest mb-3">Expected Outcome</p>
+                  <ul className="text-sm text-slate-600 space-y-2 text-left">
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#FF8A65]" />
+                      <span>Precise completion dates based on program tiers</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#FF8A65]" />
+                      <span>Automated eligibility status (Regular vs. MBG)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#FF8A65]" />
+                      <span>Legal notice alerts for exceeded deadlines</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
             )}
           </div>
