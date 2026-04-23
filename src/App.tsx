@@ -146,6 +146,7 @@ function getStandardDays(programKey: ProgramKey, startDate: Date): number {
 }
 
 export default function App() {
+  const dateInputRef = React.useRef<HTMLInputElement>(null);
   const [program, setProgram] = useState<ProgramKey | ''>('');
   const [startDate, setStartDate] = useState<string>('');
   const [extraWeeks, setExtraWeeks] = useState<number | string>(0);
@@ -301,7 +302,7 @@ for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank
                   <select
                     value={program}
                     onChange={(e) => setProgram(e.target.value as ProgramKey)}
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF8A65] focus:border-transparent transition-shadow"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF8A65] focus:border-transparent transition-shadow cursor-pointer"
                   >
                     <option value="" disabled>Select a program...</option>
                     {Object.entries(PROGRAMS)
@@ -318,12 +319,15 @@ for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank
                     Starting Cohort Date
                     <Tooltip text="The official date the student's cohort began. Must be 11 / 14 / 2024 or later. All TripleTen cohorts start on a Thursday — this calculator only applies to students on the new OTG day-based schedule." />
                   </label>
-                  <div className={cn(
-                    "relative group w-full rounded-lg border bg-white transition-shadow focus-within:ring-2 focus-within:border-transparent",
-                    isBeforeMinDate ? "border-red-300 focus-within:ring-red-500" :
-                      isNotThursday ? "border-amber-300 focus-within:ring-amber-500" :
-                        "border-slate-300 focus-within:ring-[#FF8A65]"
-                  )}>
+                  <div
+                    className={cn(
+                      "relative group w-full rounded-lg border bg-white transition-shadow focus-within:ring-2 focus-within:border-transparent cursor-pointer",
+                      isBeforeMinDate ? "border-red-300 focus-within:ring-red-500" :
+                        isNotThursday ? "border-amber-300 focus-within:ring-amber-500" :
+                          "border-slate-300 focus-within:ring-[#FF8A65]"
+                    )}
+                    onClick={() => dateInputRef.current?.showPicker?.()}
+                  >
                     {/* Visual Display (Underneath) */}
                     <div className="flex items-center justify-between px-3 py-2 pointer-events-none">
                       <span className="text-sm text-slate-900">
@@ -333,6 +337,7 @@ for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank
                     </div>
                     {/* Native Picker (On Top, Invisible) */}
                     <input
+                      ref={dateInputRef}
                       type="date"
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
