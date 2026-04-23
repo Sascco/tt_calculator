@@ -222,7 +222,7 @@ export default function App() {
     let legalNoticeUrgency = '';
     if (status === 'exceeded') {
       const urgencyDays = differenceInDays(today, mbgEndDate);
-      const formattedDeadline = format(mbgEndDate, 'MMM do, yyyy');
+      const formattedDeadline = format(mbgEndDate, 'MMMM d, yyyy');
 
       if (urgencyDays > 0) {
         legalNoticeUrgency = `Send after ${formattedDeadline} (Overdue by ${urgencyDays} day(s))`;
@@ -312,7 +312,7 @@ for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank
                   {isBeforeMinDate && (
                     <p className="mt-1.5 text-xs text-red-600 flex items-start gap-1">
                       <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-                      <span>This calculator is only applicable to students starting from Nov 14th, 2024.</span>
+                      <span>This calculator is only applicable to students starting from November 14, 2024.</span>
                     </p>
                   )}
                   {!isBeforeMinDate && isNotThursday && (
@@ -433,7 +433,7 @@ for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank
                         <Clock className="w-4 h-4 text-red-300 shrink-0" />
                         <span className="text-sm font-semibold text-white">
                           {results.todayDerivedFields.legalNoticeUrgency}
-                          <span className="opacity-75 font-normal ml-2">({format(results.legalNoticeDate, 'MMM do, yyyy')})</span>
+                          <span className="opacity-75 font-normal ml-2">({format(results.legalNoticeDate, 'MMMM d, yyyy')})</span>
                         </span>
                       </div>
                     </div>
@@ -451,7 +451,7 @@ for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank
                       <Tooltip text="The targeted completion date if the student uses no extensions." />
                     </div>
                     <div className="text-2xl font-bold text-slate-900">
-                      {format(results.regularEndDate, 'MMM do, yyyy')}
+                      {format(results.regularEndDate, 'MMMM d, yyyy')}
                     </div>
                     <div className="text-sm text-slate-500 mt-1">
                       Target completion date without extensions.
@@ -465,7 +465,7 @@ for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank
                       <Tooltip text="The absolute latest date the student can complete their program and remain eligible for the Money-Back Guarantee. The specific timeframes for timely completion are set as 1.5 times the enrollment period" />
                     </div>
                     <div className="text-2xl font-bold text-slate-900">
-                      {format(results.mbgEndDate, 'MMM do, yyyy')}
+                      {format(results.mbgEndDate, 'MMMM d, yyyy')}
                     </div>
                     <div className="text-sm text-slate-500 mt-1">
                       Absolute limit for refund eligibility.
