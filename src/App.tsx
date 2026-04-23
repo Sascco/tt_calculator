@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { addWeeks, addDays, differenceInDays, format, isBefore, parseISO, isValid } from 'date-fns';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import { Calendar, Clock, AlertCircle, CheckCircle2, XCircle, Info, Calculator, GraduationCap, ShieldCheck, ShieldAlert, ShieldX } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -147,13 +149,13 @@ function getStandardDays(programKey: ProgramKey, startDate: Date): number {
 
 export default function App() {
   const [program, setProgram] = useState<ProgramKey | ''>('');
-  const [startDate, setStartDate] = useState<string>('');
+  const [startDate, setStartDate] = useState<Date | null>(null);
   const [extraWeeks, setExtraWeeks] = useState<number | string>(0);
 
   // Validation
   const minDate = parseISO('2024-11-14');
-  const parsedStartDate = parseISO(startDate);
-  const isValidDate = isValid(parsedStartDate);
+  const parsedStartDate = startDate || new Date(0);
+  const isValidDate = startDate !== null && isValid(startDate);
   const isBeforeMinDate = isValidDate && isBefore(parsedStartDate, minDate);
   // All TripleTen cohorts start on Thursdays (getDay() === 4)
   const isNotThursday = isValidDate && parsedStartDate.getDay() !== 4;
@@ -222,7 +224,7 @@ export default function App() {
     let legalNoticeUrgency = '';
     if (status === 'exceeded') {
       const urgencyDays = differenceInDays(today, mbgEndDate);
-      const formattedDeadline = format(mbgEndDate, 'MMMM d, yyyy');
+      const formattedDeadline = format(mbgEndDate, 'MM / dd / yyyy');
 
       if (urgencyDays > 0) {
         legalNoticeUrgency = `Send after ${formattedDeadline} (Overdue by ${urgencyDays} day(s))`;
@@ -296,23 +298,25 @@ for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">
                     Starting Cohort Date
-                    <Tooltip text="The official date the student's cohort began. Must be November 14, 2024 or later. All TripleTen cohorts start on a Thursday — this calculator only applies to students on the new OTG day-based schedule." />
+                    <Tooltip text="The official date the student's cohort began. Must be 11 / 14 / 2024 or later. All TripleTen cohorts start on a Thursday — this calculator only applies to students on the new OTG day-based schedule." />
                   </label>
-                  <input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
+                  <DatePicker
+                    selected={startDate}
+                    onChange={(date) => setStartDate(date)}
+                    placeholderText="Select a date..."
+                    dateFormat="MM / dd / yyyy"
                     className={cn(
                       "w-full rounded-lg border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-shadow",
                       isBeforeMinDate ? "border-red-300 focus:ring-red-500" :
                         isNotThursday ? "border-amber-300 focus:ring-amber-500" :
                           "border-slate-300 focus:ring-[#FF8A65]"
                     )}
+                    wrapperClassName="w-full"
                   />
                   {isBeforeMinDate && (
                     <p className="mt-1.5 text-xs text-red-600 flex items-start gap-1">
                       <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-                      <span>This calculator is only applicable to students starting from November 14, 2024.</span>
+                      <span>This calculator is only applicable to students starting from 11 / 14 / 2024.</span>
                     </p>
                   )}
                   {!isBeforeMinDate && isNotThursday && (
@@ -433,7 +437,7 @@ for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank
                         <Clock className="w-4 h-4 text-red-300 shrink-0" />
                         <span className="text-sm font-semibold text-white">
                           {results.todayDerivedFields.legalNoticeUrgency}
-                          <span className="opacity-75 font-normal ml-2">({format(results.legalNoticeDate, 'MMMM d, yyyy')})</span>
+                          <span className="opacity-75 font-normal ml-2">({format(results.legalNoticeDate, 'MM / dd / yyyy')})</span>
                         </span>
                       </div>
                     </div>
@@ -451,7 +455,7 @@ for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank
                       <Tooltip text="The targeted completion date if the student uses no extensions." />
                     </div>
                     <div className="text-2xl font-bold text-slate-900">
-                      {format(results.regularEndDate, 'MMMM d, yyyy')}
+                      {format(results.regularEndDate, 'MM / dd / yyyy')}
                     </div>
                     <div className="text-sm text-slate-500 mt-1">
                       Target completion date without extensions.
@@ -465,7 +469,7 @@ for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank
                       <Tooltip text="The absolute latest date the student can complete their program and remain eligible for the Money-Back Guarantee. The specific timeframes for timely completion are set as 1.5 times the enrollment period" />
                     </div>
                     <div className="text-2xl font-bold text-slate-900">
-                      {format(results.mbgEndDate, 'MMMM d, yyyy')}
+                      {format(results.mbgEndDate, 'MM / dd / yyyy')}
                     </div>
                     <div className="text-sm text-slate-500 mt-1">
                       Absolute limit for refund eligibility.
