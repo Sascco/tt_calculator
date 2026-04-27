@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { addWeeks, addDays, differenceInDays, format, isBefore, parseISO, isValid } from 'date-fns';
+import { addDays, differenceInDays, format, isBefore, parseISO, isValid } from 'date-fns';
 import { Calendar, Clock, AlertCircle, CheckCircle2, XCircle, Info, Calculator, GraduationCap, ShieldCheck, ShieldAlert, ShieldX } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -28,7 +28,6 @@ type ProgramTier = {
 
 type ProgramFormat = {
   name: string;
-  mbgWeeks: number;
   defaultDays: number;
   tiers?: ProgramTier[];
   availableFrom?: string;
@@ -149,7 +148,6 @@ export default function App() {
   const dateInputRef = React.useRef<HTMLInputElement>(null);
   const [program, setProgram] = useState<ProgramKey | ''>('');
   const [startDate, setStartDate] = useState<string>('');
-  const [extraWeeks, setExtraWeeks] = useState<number | string>(0);
 
   // Validation
   const minDate = parseISO('2024-11-14');
@@ -259,7 +257,7 @@ export default function App() {
       legalNoticeDate,
       todayDerivedFields
     };
-  }, [program, startDate, extraWeeks, isValidDate, parsedStartDate, today]);
+  }, [program, startDate, isValidDate, parsedStartDate, today]);
 
   return (
     <div className="min-h-screen bg-[#F9F9F9] text-slate-900 font-sans p-4 md:p-8">
