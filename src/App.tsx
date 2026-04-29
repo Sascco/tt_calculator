@@ -474,7 +474,7 @@ for the <a href="https://docs.tripleten.com/legal/mbg_terms.html" target="_blank
                   <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
                     <div className="flex items-center gap-2 text-slate-500 mb-2">
                       <Calendar className="w-4 h-4" />
-                      <span className="text-sm font-medium uppercase tracking-wider">MBG Deadline (OTG)</span>
+                      <span className="text-sm font-medium uppercase tracking-wider">MBG Deadline (OTC)</span>
                       <Tooltip text="The absolute latest date the student can complete their program and remain eligible for the Money-Back Guarantee. The specific timeframes for timely completion are set as 1.5 times the enrollment period" />
                     </div>
                     <div className="text-2xl font-bold text-slate-900">
