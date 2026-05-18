@@ -119,6 +119,10 @@ const PROGRAMS: Record<string, ProgramFormat> = {
     name: 'AI Software Engineering (Full-time)',
     defaultDays: 98,
     unavailablePeriods: [{ from: '2026-01-23', to: '2026-03-11' }],
+    tiers: [
+      { from: parseISO('2024-11-14'), to: parseISO('2026-05-06'), days: 98 },
+      { from: parseISO('2026-05-07'), to: null, days: 196 },
+    ]
   },
   // Data Analytics
   'DA_NEW': {
